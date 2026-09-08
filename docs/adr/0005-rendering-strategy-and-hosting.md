@@ -61,6 +61,32 @@ purely through HTTP caching, which is more configuration to get right than the t
 
 **Staying with the Vite SPA.** Rejected: it is the defect being fixed.
 
+**TanStack Start, re-evaluated 2026-09-08 at the team's request.** Verified against
+`@tanstack/react-start@1.168.50`, published two days before the evaluation:
+
+- It is the better _technical_ fit for this project. React Aria ships no `"use client"`
+  directives, and Start's default mode has no client/server component boundary at all, which
+  removes a whole class of mistakes from a codebase whose entire interactive surface is React
+  Aria. It is Vite-native, so this repository's build layer, Vitest config, Tailwind plugin and
+  Playwright setup would survive the move instead of being replaced. Its router gives typed
+  search params, which matters for the filtered news archive. It ships prerendering with
+  `crawlLinks` and `autoStaticPathsDiscovery` plus a sitemap generator that understands
+  `changefreq`, `lastmod` and news publication metadata. Its server runs on `h3` and `srvx`, so
+  one artefact deploys to a Node box on-premise and to edge platforms alike.
+- It has **no ISR**: the string `revalidate` does not appear anywhere in its packages. Semi-dynamic
+  content would be prerender plus a content webhook plus HTTP cache headers.
+- It is young and moving fast, shipping patch releases daily.
+
+**Rejected, on the axis that decides it here: the hospital's IT department will maintain this
+code.** That makes the size of the hiring pool, the volume of available material for
+self-diagnosis, and the fact that "Next.js" survives a handover document worth more than the
+technical fit. The cost accepted in exchange is discipline around the client boundary, mitigated
+by `scripts/check-client-boundary.mjs` in the verify gate.
+
+What would flip this decision: the maintenance owner changing to a team the project controls. If
+that happens, revisit this ADR rather than re-litigating it informally. Note that the ISR gap is
+smaller than it looks, because rule 2 above already forbids depending on ISR for correctness.
+
 ## Consequences
 
 - The build layer changes: Vite is replaced, Vitest gets its own config, Tailwind moves to the
@@ -72,6 +98,9 @@ purely through HTTP caching, which is more configuration to get right than the t
   wrappers only. The wrapper layer that already exists is kept for exactly this reason.
 - Client-side navigation goes through React Aria's `RouterProvider`, wired to the Next router, so
   `Link` and `MenuItem href` do not fall back to full page loads.
+- `pnpm run check:boundary` fails when `'use client'` appears outside `src/components` (plus
+  `src/providers.tsx`), and prints the whole client surface on every run so its growth is visible
+  in CI logs. This is the mitigation for the one real cost of choosing Next over TanStack Start.
 - Choosing a managed platform later unlocks edge handlers and turnkey ISR; nothing has to be
   rewritten to take advantage of them. Choosing self-hosting later requires a cache handler for
   ISR and nothing else. That symmetry is the whole point of the three rules above.

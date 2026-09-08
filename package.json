@@ -23,9 +23,10 @@
     "test:a11y": "playwright test",
     "test:a11y:ui": "playwright test --ui",
     "check:contrast": "node scripts/check-contrast.mjs",
+    "check:boundary": "node scripts/check-client-boundary.mjs",
     "design:inventory": "node scripts/generate-component-inventory.mjs",
     "design:inventory:check": "node scripts/generate-component-inventory.mjs --check",
-    "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run check:contrast && pnpm run design:inventory:check && pnpm run test && pnpm run build"
+    "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run check:contrast && pnpm run check:boundary && pnpm run design:inventory:check && pnpm run test && pnpm run build"
   },
   "dependencies": {
     "react": "^19.2.8",

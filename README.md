@@ -49,18 +49,19 @@ pnpm dev          # http://localhost:5173
 
 ## Scripts
 
-| Command               | What it does                                                                    |
-| --------------------- | ------------------------------------------------------------------------------- |
-| `pnpm dev`            | Dev server with HMR                                                             |
-| `pnpm build`          | Type-check the project references, then produce the production bundle           |
-| `pnpm preview`        | Serve the production build on port 4173                                         |
-| `pnpm lint`           | ESLint over the whole repo                                                      |
-| `pnpm typecheck`      | TypeScript, no emit                                                             |
-| `pnpm test`           | Unit and component tests                                                        |
-| `pnpm test:coverage`  | Same, with a V8 coverage report                                                 |
-| `pnpm test:a11y`      | Playwright suite: axe scan, keyboard, focus, 200% zoom, target size             |
-| `pnpm check:contrast` | Verifies every token pair against its WCAG threshold, AA blocking, AAA reported |
-| `pnpm verify`         | Everything above, in the order CI runs it                                       |
+| Command               | What it does                                                                              |
+| --------------------- | ----------------------------------------------------------------------------------------- |
+| `pnpm dev`            | Dev server with HMR                                                                       |
+| `pnpm build`          | Type-check the project references, then produce the production bundle                     |
+| `pnpm preview`        | Serve the production build on port 4173                                                   |
+| `pnpm lint`           | ESLint over the whole repo                                                                |
+| `pnpm typecheck`      | TypeScript, no emit                                                                       |
+| `pnpm test`           | Unit and component tests                                                                  |
+| `pnpm test:coverage`  | Same, with a V8 coverage report                                                           |
+| `pnpm test:a11y`      | Playwright suite: axe scan, keyboard, focus, 200% zoom, target size                       |
+| `pnpm check:contrast` | Verifies every token pair against its WCAG threshold, AA blocking, AAA reported           |
+| `pnpm check:boundary` | Fails when `'use client'` appears outside `src/components`, and prints the client surface |
+| `pnpm verify`         | Everything above, in the order CI runs it                                                 |
 
 Run `pnpm verify` before opening a pull request; it is the same gate CI applies.
 

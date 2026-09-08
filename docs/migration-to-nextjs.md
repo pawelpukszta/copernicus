@@ -41,7 +41,9 @@ exist is a different piece of work.
 4. **Client boundary.** Add `'use client'` to the first line of every file under
    `src/components/**` that imports React Aria. Verified fact behind this step: the library ships
    no `"use client"` directives of its own. Add a `providers.tsx` client component holding
-   `RouterProvider` wired to `useRouter`, and mount it in the layout.
+   `RouterProvider` wired to `useRouter`, and mount it in the layout. Then run
+   `pnpm run check:boundary`: it lists the client surface and fails if the directive appears
+   anywhere else.
 5. **Routes.** Create the route folders from the table in
    `../design/information-architecture.md`, each initially a server component returning static
    content. Set `revalidate` per the tier column.
@@ -50,8 +52,8 @@ exist is a different piece of work.
 7. **Lint.** Add `eslint-config-next` to the flat config, in the block that already scopes
    type-aware rules to `ts`/`tsx`. Keep `jsx-a11y` strict as the primary accessibility gate;
    Next's own rules are additive.
-8. **CI.** Update the build step and add `pnpm run design:inventory:check` so the generated
-   component list cannot go stale.
+8. **CI.** Update the build step. `pnpm run design:inventory:check` and
+   `pnpm run check:boundary` are already wired into the verify gate and the workflow.
 9. **Verify.** `pnpm verify` plus `pnpm test:a11y`. The accessibility suite now also proves that
    content exists in the server-rendered HTML, which is the defect this whole migration addresses.
    Add one assertion for that explicitly: fetch a route with JavaScript disabled and check that
@@ -60,8 +62,9 @@ exist is a different piece of work.
 ## Risks
 
 - **Client boundary creep.** One `'use client'` in the wrong place pulls a subtree into the
-  bundle. Mitigation: the wrapper layer is the only place that directive appears, and a bundle
-  size check belongs in CI once real pages exist.
+  bundle. Mitigation: `pnpm run check:boundary` is already in the verify gate and in CI, so the
+  wrapper layer stays the only place that directive appears. A bundle size check belongs in CI
+  too, once real pages exist.
 - **Tailwind 4 with PostCSS.** Behaves the same as the Vite plugin, but the `@theme inline`
   block in `global.css` must keep working; verify the generated custom properties after step 2.
 - **Two test runners sharing a transform.** Vitest without the Vite config still needs the React
