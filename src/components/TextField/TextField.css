@@ -1,0 +1,47 @@
+.cp-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 32rem;
+  margin-block-end: var(--space-6);
+}
+
+.cp-field__label {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.cp-field__input {
+  min-height: var(--target-min);
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.cp-field__description {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+.cp-field__error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-danger);
+  font-weight: 600;
+}
+
+/* Error state is signalled by border weight and text, not colour alone. */
+.cp-field[data-invalid] .cp-field__input {
+  border-color: var(--color-danger);
+  border-width: 3px;
+}
+
+@media (forced-colors: active) {
+  .cp-field__input {
+    border-color: CanvasText;
+  }
+}

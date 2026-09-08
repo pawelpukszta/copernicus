@@ -1,0 +1,73 @@
+.cp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--target-min);
+  min-width: var(--target-min);
+  padding: var(--space-2) var(--space-4);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 120ms ease-out;
+}
+
+.cp-button[data-disabled] {
+  cursor: not-allowed;
+  opacity: 1; /* Never rely on opacity alone: it can break the contrast budget. */
+  background-color: var(--color-surface-sunken);
+  color: var(--color-text-muted);
+  border-color: var(--color-border);
+}
+
+.cp-button--primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.cp-button--primary[data-hovered] {
+  background-color: var(--color-primary-hover);
+}
+
+.cp-button--primary[data-pressed] {
+  background-color: var(--color-primary-active);
+}
+
+.cp-button--secondary {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+
+.cp-button--secondary[data-hovered] {
+  background-color: var(--color-surface-raised);
+}
+
+.cp-button--ghost {
+  background-color: transparent;
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+}
+
+.cp-button--ghost[data-hovered] {
+  background-color: var(--color-surface-raised);
+}
+
+/* Windows High Contrast / forced-colors mode must keep the button legible. */
+@media (forced-colors: active) {
+  .cp-button {
+    border-color: ButtonText;
+    forced-color-adjust: none;
+    background-color: ButtonFace;
+    color: ButtonText;
+  }
+
+  .cp-button[data-focus-visible] {
+    outline: 3px solid Highlight;
+  }
+}

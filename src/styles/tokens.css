@@ -1,0 +1,122 @@
+/*
+ * Design tokens for the Copernicus redesign.
+ *
+ * Conformance target: WCAG 2.2 level AA. The palette below happens to clear the AAA
+ * thresholds as well, so contrast is not what blocks a later move to AAA. Keep it that
+ * way when adding colours: it costs nothing today and preserves the option.
+ *
+ * Contrast budget enforced by scripts/check-contrast.mjs:
+ *   - body text vs surface:  AA >= 4.5:1,  AAA >= 7:1    (1.4.3 / 1.4.6)
+ *   - large text vs surface: AA >= 3:1,    AAA >= 4.5:1  (1.4.3 / 1.4.6)
+ *   - borders, focus indicators: >= 3:1 at both levels   (1.4.11)
+ *
+ * CI fails on an AA breach and prints the AAA gap as advisory.
+ * Do not add a colour here without adding it to that manifest.
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* Surfaces */
+  --color-surface: #ffffff;
+  --color-surface-raised: #f4f6f8;
+  --color-surface-sunken: #e8ecf0;
+
+  /* Text */
+  --color-text: #14181c;
+  --color-text-muted: #4a5560;
+  --color-text-inverse: #ffffff;
+
+  /* Brand / action */
+  --color-primary: #0b4a6f;
+  --color-primary-hover: #093c5a;
+  --color-primary-active: #072e45;
+
+  /* Feedback */
+  --color-danger: #8a1c1c;
+  --color-success: #14562c;
+  --color-warning: #6b4400;
+
+  /* Lines and focus */
+  --color-border: #5b6672;
+  --color-border-strong: #14181c;
+  --color-focus: #0b4a6f;
+  --color-focus-offset: #ffffff;
+
+  /* Typography. The line height, paragraph spacing and measure below satisfy
+     1.4.8 Visual Presentation (AAA); they are kept because they are also plain good
+     typography, not because AAA is claimed. */
+  --font-sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --line-height-body: 1.6; /* >= 1.5 required */
+  --paragraph-spacing: 2em; /* >= 1.5x line height required */
+  --measure: 70ch; /* <= 80 characters required */
+
+  /* Spacing scale */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+
+  /* Interactive sizing. 2.5.8 Target Size Minimum (AA) requires 24x24 CSS px;
+     2.5.5 (AAA) requires 44x44. The value below meets the AAA figure already. */
+  --target-min: 2.75rem;
+
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+
+  /* Focus indicator. 2.4.7 Focus Visible (AA) requires only that focus is visible;
+     the 3px ring below also satisfies 2.4.13 Focus Appearance (AAA). */
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --color-surface: #0d1116;
+    --color-surface-raised: #161c23;
+    --color-surface-sunken: #080b0e;
+
+    --color-text: #eef3f7;
+    --color-text-muted: #b9c4ce;
+    --color-text-inverse: #0d1116;
+
+    --color-primary: #8fc7ea;
+    --color-primary-hover: #a9d5f1;
+    --color-primary-active: #c3e2f6;
+
+    --color-danger: #ff9d9d;
+    --color-success: #86dfa6;
+    --color-warning: #f0c66b;
+
+    --color-border: #9aa7b3;
+    --color-border-strong: #eef3f7;
+    --color-focus: #8fc7ea;
+    --color-focus-offset: #0d1116;
+  }
+}
+
+:root[data-theme='dark'] {
+  --color-surface: #0d1116;
+  --color-surface-raised: #161c23;
+  --color-surface-sunken: #080b0e;
+
+  --color-text: #eef3f7;
+  --color-text-muted: #b9c4ce;
+  --color-text-inverse: #0d1116;
+
+  --color-primary: #8fc7ea;
+  --color-primary-hover: #a9d5f1;
+  --color-primary-active: #c3e2f6;
+
+  --color-danger: #ff9d9d;
+  --color-success: #86dfa6;
+  --color-warning: #f0c66b;
+
+  --color-border: #9aa7b3;
+  --color-border-strong: #eef3f7;
+  --color-focus: #8fc7ea;
+  --color-focus-offset: #0d1116;
+}
