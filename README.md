@@ -103,9 +103,10 @@ Two rules keep the codebase honest:
 ## Design workflow
 
 The visual design is produced on a Claude Design canvas and implemented from specs, with the
-repository holding the contract between the two. `design/README.md` describes the loop; the short
-version is that the canvas may only use components from `design/component-exports.generated.md`
-and tokens from `src/styles/tokens.css`, both of which CI verifies.
+repository holding the contract between the two. `design/workflow.md` is the step-by-step manual;
+the short version is that the canvas may only use components from
+`design/component-exports.generated.md` and tokens from `src/styles/tokens.css`, both of which CI
+verifies.
 
 Regenerate the component list after upgrading React Aria:
 

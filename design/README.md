@@ -15,6 +15,10 @@ folder produces. Neither side invents a component or a colour on its own.
 `brief.md` is the document you paste into Claude Design as the starting instruction. It exists so
 the canvas starts from these three inputs instead of from a blank page.
 
+**New to this process? Read `workflow.md`.** It walks the whole loop step by step, with the prompts
+to use, where each crossing between the two tools happens, and what to do when design and code
+disagree.
+
 ## The loop
 
 1. **Audit and IA**, in Claude Code: what the current site holds, what the new structure is.
@@ -51,6 +55,7 @@ Canvas URL: not created yet.
 ```
 design/
   README.md                          this file
+  workflow.md                        step-by-step operating manual for the loop
   brief.md                           input for Claude Design
   information-architecture.md        content model, routes, rendering tier per route
   component-inventory.md             policy: what may be used, and what needs JavaScript
