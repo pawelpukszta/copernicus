@@ -18,9 +18,14 @@ export default defineConfig({
     { name: 'mobile-safari', use: { ...devices['iPhone 14'] } },
   ],
   webServer: {
-    command: 'pnpm run build && pnpm run preview',
+    // Runs the standalone artefact, which is what gets deployed. `next start` does
+    // not work with output: 'standalone', and testing the dev server would not prove
+    // that content is present in the server-rendered HTML.
+    command:
+      'pnpm run build && node scripts/prepare-standalone.mjs && node .next/standalone/server.js',
+    env: { PORT: String(PORT) },
     port: PORT,
     reuseExistingServer: !process.env.CI,
-    timeout: 180_000,
+    timeout: 240_000,
   },
 });

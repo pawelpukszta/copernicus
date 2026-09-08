@@ -1,0 +1,11 @@
+.cp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.cp-status {
+  min-height: 1.6em;
+  font-weight: 600;
+  color: var(--color-success);
+}

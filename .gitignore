@@ -3,10 +3,15 @@ node_modules/
 .pnpm-store/
 
 # Build output
+.next/
+out/
 dist/
-dist-ssr/
 build/
 *.local
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
 
 # Test / coverage output
 coverage/

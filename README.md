@@ -12,15 +12,15 @@ to it, with a cost estimate per criterion, is in
 
 ## Stack
 
-| Concern             | Choice                                                                                              |
-| ------------------- | --------------------------------------------------------------------------------------------------- |
-| Build               | Vite 8                                                                                              |
-| UI                  | React 19 + React Aria Components                                                                    |
-| Language            | TypeScript 5.9 (strict, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)                   |
-| Styling             | Tailwind CSS 4 with CSS custom-property design tokens                                               |
-| Unit tests          | Vitest + Testing Library (jsdom)                                                                    |
-| Accessibility tests | Playwright + axe-core, plus keyboard, zoom and target-size assertions, AA blocking and AAA advisory |
-| Lint                | ESLint 9 flat config, `jsx-a11y` in strict mode, type-aware rules                                   |
+| Concern             | Choice                                                                                                                           |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Framework           | Next.js 16, App Router                                                                                                           |
+| UI                  | React 19 + React Aria Components                                                                                                 |
+| Language            | TypeScript 5.9 (strict, `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`)                                                |
+| Styling             | Tailwind CSS 4 through PostCSS, over CSS custom-property design tokens                                                           |
+| Unit tests          | Vitest + Testing Library (jsdom)                                                                                                 |
+| Accessibility tests | Playwright + axe-core against the standalone build, plus keyboard, zoom and target-size assertions, AA blocking and AAA advisory |
+| Lint                | ESLint 9 flat config, `jsx-a11y` in strict mode, type-aware rules                                                                |
 
 Rationale and trade-offs for each choice are recorded in [`docs/adr/`](docs/adr).
 
@@ -44,24 +44,25 @@ once the version has aged past the cooldown.
 
 ```bash
 pnpm install
-pnpm dev          # http://localhost:5173
+pnpm dev          # http://localhost:3000
 ```
 
 ## Scripts
 
-| Command               | What it does                                                                              |
-| --------------------- | ----------------------------------------------------------------------------------------- |
-| `pnpm dev`            | Dev server with HMR                                                                       |
-| `pnpm build`          | Type-check the project references, then produce the production bundle                     |
-| `pnpm preview`        | Serve the production build on port 4173                                                   |
-| `pnpm lint`           | ESLint over the whole repo                                                                |
-| `pnpm typecheck`      | TypeScript, no emit                                                                       |
-| `pnpm test`           | Unit and component tests                                                                  |
-| `pnpm test:coverage`  | Same, with a V8 coverage report                                                           |
-| `pnpm test:a11y`      | Playwright suite: axe scan, keyboard, focus, 200% zoom, target size                       |
-| `pnpm check:contrast` | Verifies every token pair against its WCAG threshold, AA blocking, AAA reported           |
-| `pnpm check:boundary` | Fails when `'use client'` appears outside `src/components`, and prints the client surface |
-| `pnpm verify`         | Everything above, in the order CI runs it                                                 |
+| Command                 | What it does                                                                                 |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| `pnpm dev`              | Next dev server on port 3000                                                                 |
+| `pnpm build`            | Production build (`next build`, which also type-checks)                                      |
+| `pnpm start`            | Serves the standalone build: `node .next/standalone/server.js`                               |
+| `pnpm lint`             | ESLint over the whole repo                                                                   |
+| `pnpm typecheck`        | TypeScript, no emit. Run it after a build: `next-env.d.ts` references types Next generates   |
+| `pnpm test`             | Unit and component tests                                                                     |
+| `pnpm test:coverage`    | Same, with a V8 coverage report                                                              |
+| `pnpm test:a11y`        | Playwright suite: axe scan, keyboard, focus, 200% zoom, target size, server-rendered content |
+| `pnpm check:contrast`   | Verifies every token pair against its WCAG threshold, AA blocking, AAA reported              |
+| `pnpm check:boundary`   | Fails when `'use client'` appears outside `src/components`, and prints the client surface    |
+| `pnpm design:inventory` | Regenerates the React Aria component list for the design canvas                              |
+| `pnpm verify`           | Everything above, in the order CI runs it                                                    |
 
 Run `pnpm verify` before opening a pull request; it is the same gate CI applies.
 
@@ -69,6 +70,8 @@ Run `pnpm verify` before opening a pull request; it is the same gate CI applies.
 
 ```
 src/
+  app/                   App Router: routes, layouts, server components
+  providers.tsx          React Aria RouterProvider wired to the Next router
   components/<Name>/     Component, its CSS, its tests, and a barrel export
   styles/tokens.css      Design tokens; the single source of colour truth
   styles/global.css      Reset, base typography, one shared focus indicator
@@ -93,13 +96,16 @@ Automated checks cover roughly a third of WCAG failures. The rest is manual and 
 [`docs/accessibility.md`](docs/accessibility.md), including the screen reader matrix and the
 criteria that no tool can verify.
 
-Two rules keep the codebase honest:
+Three rules keep the codebase honest:
 
 1. **No new colour outside `src/styles/tokens.css`.** Every pair a user can see must appear in
    the manifest in `scripts/check-contrast.mjs` with its pair kind, or CI does not know to guard
    it.
 2. **No custom interactive widget without React Aria.** If a pattern is missing from React Aria,
    raise it in an ADR before hand-rolling roles and key handlers.
+3. **`'use client'` only under `src/components` and in `src/providers.tsx`.** React Aria ships no
+   client directives of its own, so the wrappers are the boundary. `pnpm check:boundary` enforces
+   it and prints the whole client surface on every run.
 
 ## Design workflow
 

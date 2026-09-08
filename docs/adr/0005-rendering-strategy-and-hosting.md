@@ -25,7 +25,11 @@ Next.js App Router, with rendering assigned per route in
 2. **ISR is an optimisation, never a correctness requirement.** Every route must be correct if
    revalidation never fires, because a self-hosted multi-instance deployment needs a shared cache
    handler before ISR behaves as documented. Where freshness actually matters, fetch on request.
-3. **`output: 'standalone'`,** so a container image is one build away whichever host wins.
+3. **`output: 'standalone'`,** so a container image is one build away whichever host wins. Note
+   that this disables `next start`: the server runs as `node .next/standalone/server.js`, after
+   `scripts/prepare-standalone.mjs` places `.next/static` and `public` beside it. The `start`
+   script and the Playwright suite both do that, so the accessibility tests exercise the exact
+   artefact that gets deployed rather than a dev server.
 
 ## Rendering tiers
 

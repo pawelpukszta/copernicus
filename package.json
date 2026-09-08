@@ -3,20 +3,20 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Copernicus website redesign: accessible React front-end conforming to WCAG 2.2 AA, with a documented path to AAA.",
+  "description": "Copernicus website redesign: accessible Next.js front-end conforming to WCAG 2.2 AA, with a documented path to AAA.",
   "packageManager": "pnpm@11.25.0",
   "engines": {
     "node": ">=22.13.0"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "node scripts/prepare-standalone.mjs && node .next/standalone/server.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc -b --noEmit",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
@@ -26,9 +26,10 @@
     "check:boundary": "node scripts/check-client-boundary.mjs",
     "design:inventory": "node scripts/generate-component-inventory.mjs",
     "design:inventory:check": "node scripts/generate-component-inventory.mjs --check",
-    "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run check:contrast && pnpm run check:boundary && pnpm run design:inventory:check && pnpm run test && pnpm run build"
+    "verify": "pnpm run format:check && pnpm run lint && pnpm run check:contrast && pnpm run check:boundary && pnpm run design:inventory:check && pnpm run test && pnpm run build && pnpm run typecheck"
   },
   "dependencies": {
+    "next": "^16.3.4",
     "react": "^19.2.8",
     "react-aria-components": "^1.21.1",
     "react-dom": "^19.2.8"
@@ -37,7 +38,7 @@
     "@axe-core/playwright": "^4.13.0",
     "@eslint/js": "^9.39.5",
     "@playwright/test": "^1.63.0",
-    "@tailwindcss/vite": "^4.3.3",
+    "@tailwindcss/postcss": "^4.3.3",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.7",
     "@types/node": "^24.0.0",

@@ -38,9 +38,6 @@ jobs:
       - name: ESLint
         run: pnpm run lint
 
-      - name: TypeScript
-        run: pnpm run typecheck
-
       # Fails on an AA breach; prints the distance to AAA as advisory output.
       # Set CONTRAST_LEVEL=aaa here to make the AAA thresholds blocking.
       - name: Contrast budget (WCAG 1.4.3 AA, AAA advisory)
@@ -61,6 +58,12 @@ jobs:
 
       - name: Build
         run: pnpm run build
+
+      # After the build on purpose: Next generates next-env.d.ts, which references
+      # types under .next/types, so a standalone tsc run cannot resolve them first.
+      # `next build` type-checks the project too; this catches what its flags skip.
+      - name: TypeScript
+        run: pnpm run typecheck
 
   accessibility:
     name: Accessibility AA (axe + keyboard)

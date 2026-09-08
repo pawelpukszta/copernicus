@@ -1,22 +1,18 @@
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
 
+/**
+ * Vitest keeps its own config now that Next owns the application build. The React
+ * plugin is still required here: without it the JSX in component tests is not
+ * transformed.
+ */
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
-  },
-  server: {
-    port: 5173,
-    strictPort: true,
-  },
-  preview: {
-    port: 4173,
-    strictPort: true,
   },
   test: {
     environment: 'jsdom',
@@ -27,7 +23,7 @@ export default defineConfig({
     coverage: {
       reporter: ['text', 'lcov'],
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/**/*.{test,spec}.{ts,tsx}', 'src/main.tsx'],
+      exclude: ['src/**/*.{test,spec}.{ts,tsx}', 'src/app/**'],
     },
   },
 });

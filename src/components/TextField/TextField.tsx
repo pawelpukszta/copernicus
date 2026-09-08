@@ -1,3 +1,5 @@
+'use client';
+
 import { FieldError, Input, Label, Text, TextField as AriaTextField } from 'react-aria-components';
 import type { TextFieldProps as AriaTextFieldProps, ValidationResult } from 'react-aria-components';
 import type { ReactNode } from 'react';

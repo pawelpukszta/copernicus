@@ -1,21 +1,20 @@
-import { useState } from 'react';
-import { Button } from './components/Button';
-import { SkipLink } from './components/SkipLink';
-import { TextField } from './components/TextField';
-import './App.css';
+import type { Metadata } from 'next';
+import { AccessibilityDemo } from '@/components/AccessibilityDemo';
+import './page.css';
+
+export const metadata: Metadata = {
+  title: 'Start',
+};
 
 /**
- * Landing shell for the redesign. It exists to prove the accessibility baseline:
- * one skip link, a single h1, real landmarks, and components wired to tokens.
- * Replace the content as soon as the information architecture is agreed.
+ * Placeholder homepage. It exists to prove the baseline rather than to be the
+ * design: the contact numbers below are rendered on the server, so they are
+ * readable before hydration and with JavaScript disabled, which is what
+ * e2e/server-rendered.spec.ts asserts. Replace once design/screens/ has a spec.
  */
-export function App() {
-  const [submitted, setSubmitted] = useState(false);
-
+export default function HomePage() {
   return (
     <>
-      <SkipLink />
-
       <header className="cp-header">
         <nav aria-label="Nawigacja główna">
           <ul className="cp-nav">
@@ -37,6 +36,21 @@ export function App() {
           zgodność z WCAG 2.2 na poziomie AA.
         </p>
 
+        <section aria-labelledby="kontakt">
+          <h2 id="kontakt">Kontakt</h2>
+          {/* Server-rendered on purpose: this must work without JavaScript. */}
+          <ul className="cp-contact">
+            <li>
+              Centrala, Szpital im. M. Kopernika, ul. Nowe Ogrody 1-6:{' '}
+              <a href="tel:+48587640100">58 764 01 00</a>
+            </li>
+            <li>
+              Szpital św. Wojciecha, al. Jana Pawła II 50:{' '}
+              <a href="tel:+48587684000">58 768 40 00</a>
+            </li>
+          </ul>
+        </section>
+
         <section aria-labelledby="dostepnosc">
           <h2 id="dostepnosc">Baseline dostępności</h2>
           <ul>
@@ -48,33 +62,7 @@ export function App() {
           </ul>
         </section>
 
-        <section aria-labelledby="demo">
-          <h2 id="demo">Komponenty</h2>
-          <TextField
-            label="Adres e-mail"
-            type="email"
-            autoComplete="email"
-            description="Używamy go wyłącznie do potwierdzenia zgłoszenia."
-            isRequired
-          />
-          <div className="cp-actions">
-            <Button
-              onPress={() => {
-                setSubmitted(true);
-              }}
-            >
-              Wyślij zgłoszenie
-            </Button>
-            <Button variant="secondary" onPress={() => setSubmitted(false)}>
-              Wyczyść
-            </Button>
-          </div>
-
-          {/* Status messages must be announced without moving focus (4.1.3). */}
-          <p role="status" aria-live="polite" className="cp-status">
-            {submitted ? 'Zgłoszenie zostało zapisane.' : ''}
-          </p>
-        </section>
+        <AccessibilityDemo />
       </main>
 
       <footer className="cp-footer">

@@ -6,7 +6,17 @@ import jsxA11y from 'eslint-plugin-jsx-a11y';
 import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage', 'playwright-report', 'test-results'] },
+  {
+    ignores: [
+      '.next',
+      'out',
+      'next-env.d.ts',
+      'dist',
+      'coverage',
+      'playwright-report',
+      'test-results',
+    ],
+  },
 
   js.configs.recommended,
 
