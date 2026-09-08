@@ -24,6 +24,17 @@ than a code one.
 | `jsx-a11y` strict ruleset                      | `pnpm lint`           | static markup errors                       |
 | Component behaviour tests                      | `pnpm test`           | 2.1.1, 3.3.2, 4.1.2                        |
 
+The browser suite runs three Playwright projects: Chromium and Firefox at desktop widths, and an
+emulated iPhone. The two checks that depend on Tab traversal (skip link, focus visibility) skip
+themselves on the touch profile, because iOS Safari does not move focus with Tab unless the user
+turns on Full Keyboard Access, and asserting it there reports a browser default as a site defect.
+Everything else, target size and text zoom included, runs on all three.
+
+That leaves desktop WebKit keyboard behaviour unverified by automation. Adding a `Desktop Safari`
+project would close it, but Safari's own "press Tab to highlight each item" preference means the
+result needs checking by hand before the project is trusted. Until then, the Safari keyboard pass
+in the manual matrix below is the coverage.
+
 Two of those checks also measure the AAA thresholds and report the distance without failing the
 build: the contrast script prints a "Gap to AAA" block, and the Playwright suite records an
 `aaa-gap` annotation. That is the mechanism that keeps AAA from quietly drifting out of reach.
