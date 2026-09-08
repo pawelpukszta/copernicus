@@ -73,6 +73,7 @@ src/
   styles/global.css      Reset, base typography, one shared focus indicator
 e2e/                     Playwright accessibility and keyboard suites
 scripts/check-contrast.mjs  Contrast budget guard used by CI
+design/                  The contract between Claude Design and Claude Code
 docs/accessibility.md    AA criteria, manual owners, and the costed path to AAA
 docs/accessibility-statement.md  Source for the public accessibility statement
 docs/adr/                Architecture decisions with their trade-offs
@@ -98,6 +99,19 @@ Two rules keep the codebase honest:
    it.
 2. **No custom interactive widget without React Aria.** If a pattern is missing from React Aria,
    raise it in an ADR before hand-rolling roles and key handlers.
+
+## Design workflow
+
+The visual design is produced on a Claude Design canvas and implemented from specs, with the
+repository holding the contract between the two. `design/README.md` describes the loop; the short
+version is that the canvas may only use components from `design/component-exports.generated.md`
+and tokens from `src/styles/tokens.css`, both of which CI verifies.
+
+Regenerate the component list after upgrading React Aria:
+
+```bash
+pnpm run design:inventory
+```
 
 ## Contributing
 

@@ -3,3 +3,6 @@ coverage/
 playwright-report/
 test-results/
 pnpm-lock.yaml
+
+# Generated; must stay byte-identical for design:inventory:check
+design/component-exports.generated.md

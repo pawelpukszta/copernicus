@@ -46,6 +46,11 @@ jobs:
       - name: Contrast budget (WCAG 1.4.3 AA, AAA advisory)
         run: pnpm run check:contrast
 
+      # Fails when design/component-exports.generated.md no longer matches the
+      # installed react-aria-components version.
+      - name: Component inventory freshness
+        run: pnpm run design:inventory:check
+
       - name: Unit tests
         run: pnpm run test
 
