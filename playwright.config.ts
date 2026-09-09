@@ -16,6 +16,7 @@ export default defineConfig({
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
     { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
     { name: 'mobile-safari', use: { ...devices['iPhone 14'] } },
+    { name: 'desktop-safari', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
     // Runs the standalone artefact, which is what gets deployed. `next start` does

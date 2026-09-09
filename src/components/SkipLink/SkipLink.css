@@ -15,6 +15,10 @@
   transform: translateY(-200%);
 }
 
-.cp-skip-link:focus-visible {
+/* Reveal on any focus, not only :focus-visible. A skip link that appears only for
+   heuristic keyboard focus stays hidden when script moves focus to it, for example
+   after a route change, which is exactly when a keyboard user needs to see it. The
+   focus ring itself still comes from the :focus-visible rule in global.css. */
+.cp-skip-link:focus {
   transform: translateY(0);
 }
