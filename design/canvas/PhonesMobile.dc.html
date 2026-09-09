@@ -1,0 +1,320 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    body { margin: 0; }
+    *, *::before, *::after { box-sizing: border-box; }
+
+    .cp {
+      --color-surface: #ffffff;
+      --color-surface-raised: #f4f6f8;
+      --color-text: #14181c;
+      --color-text-muted: #4a5560;
+      --color-text-inverse: #ffffff;
+      --color-primary: #0b4a6f;
+      --color-primary-hover: #093c5a;
+      --color-danger: #8a1c1c;
+      --color-warning: #6b4400;
+      --color-border: #5b6672;
+      --color-border-strong: #14181c;
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --target-min: 2.75rem;
+      --radius-sm: 0.25rem;
+      --radius-md: 0.5rem;
+
+      font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      background-color: var(--color-surface);
+      color: var(--color-text);
+    }
+
+    .cp[data-theme='dark'] {
+      --color-surface: #0d1116;
+      --color-surface-raised: #161c23;
+      --color-text: #eef3f7;
+      --color-text-muted: #b9c4ce;
+      --color-text-inverse: #0d1116;
+      --color-primary: #8fc7ea;
+      --color-primary-hover: #a9d5f1;
+      --color-danger: #ff9d9d;
+      --color-warning: #f0c66b;
+      --color-border: #9aa7b3;
+      --color-border-strong: #eef3f7;
+    }
+
+    .cp a { color: var(--color-primary); text-decoration-thickness: 0.08em; text-underline-offset: 0.2em; }
+    .cp a:hover { color: var(--color-primary-hover); }
+    .cp h1, .cp h2 { line-height: 1.25; text-wrap: pretty; margin: 0 }
+
+    .cp .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      min-height: var(--target-min);
+      min-width: var(--target-min);
+      padding: var(--space-2) var(--space-3);
+      border: 2px solid transparent;
+      border-radius: var(--radius-md);
+      font: inherit;
+      font-weight: 600;
+      line-height: 1.2;
+      text-decoration: none;
+    }
+    .cp .btn--primary { background-color: var(--color-primary); color: var(--color-text-inverse); }
+    .cp .btn--secondary { background-color: var(--color-surface); color: var(--color-text); border-color: var(--color-border-strong); }
+
+    /* One phone row: label, number as the tap target, availability */
+    .cp .row {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      padding: var(--space-3) 0;
+      border-block-end: 1px solid var(--color-border);
+    }
+    .cp .row:last-child { border-block-end: none; }
+    .cp .row__label { font-weight: 600; }
+    .cp .row__tel {
+      display: inline-flex;
+      align-items: center;
+      min-height: var(--target-min);
+      font-size: 1.375rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--color-primary);
+      text-decoration: underline;
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.2em;
+    }
+    .cp .row__meta { color: var(--color-text-muted); font-size: 0.9375rem; }
+
+    .cp .todo {
+      display: inline-flex;
+      align-items: center;
+      min-height: var(--target-min);
+      padding-inline: var(--space-2);
+      border: 2px dashed var(--color-warning);
+      border-radius: var(--radius-sm);
+      color: var(--color-warning);
+      font-weight: 700;
+      font-size: 0.9375rem;
+    }
+
+    .cp .anno {
+      font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.35;
+      color: var(--color-text-muted);
+      border: 1px dashed var(--color-border);
+      border-radius: 3px;
+      padding: 2px 6px;
+      display: inline-block;
+    }
+
+    .cp .section { margin-block-start: var(--space-8); }
+    .cp .section > h2 { font-size: 1.25rem; }
+    .cp .section > p { color: var(--color-text-muted); font-size: 0.9375rem; margin: var(--space-1) 0 0; }
+  </style>
+</helmet>
+
+<div class="cp" data-theme="{{theme}}" style="min-height: 100%">
+
+  <!-- Compact header -->
+  <header>
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-3); border-block-end: 2px solid var(--color-border)">
+      <div style="display: flex; align-items: center; gap: var(--space-2)">
+        <div style="width: 36px; height: 36px; border: 2px solid var(--color-border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--color-text-muted)">LOGO</div>
+        <span style="font-size: 1.0625rem; font-weight: 700; letter-spacing: 0.02em">COPERNICUS</span>
+      </div>
+      <button type="button" class="btn btn--secondary">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M4 7h16"></path><path d="M4 12h16"></path><path d="M4 17h16"></path>
+        </svg>
+        Menu
+      </button>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: var(--space-2) var(--space-3); background-color: var(--color-danger); color: #ffffff">
+      <span style="font-weight: 700; font-size: 0.9375rem">Nagłe zagrożenie życia</span>
+      <a href="tel:112" style="display: inline-flex; align-items: center; min-height: var(--target-min); padding-inline: var(--space-3); border: 2px solid #ffffff; border-radius: var(--radius-md); color: #ffffff; font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; text-decoration: none">112</a>
+    </div>
+  </header>
+
+  <main id="main" style="padding: var(--space-4) var(--space-3) var(--space-8)">
+
+    <nav aria-label="Ścieżka nawigacji" style="font-size: 0.9375rem">
+      <ol style="display: flex; align-items: center; gap: var(--space-2); list-style: none; margin: 0; padding: 0">
+        <li><a href="#">Start</a></li>
+        <li aria-hidden="true" style="color: var(--color-text-muted)">/</li>
+        <li aria-current="page" style="color: var(--color-text-muted)">Ważne telefony</li>
+      </ol>
+    </nav>
+
+    <h1 style="font-size: 1.75rem; margin-block-start: var(--space-3)">Ważne telefony</h1>
+    <p style="margin: var(--space-2) 0 0">
+      Numery pilne są na górze i nie wymagają rozwijania.
+    </p>
+
+    <!-- Urgent -->
+    <section aria-labelledby="pilne-m" style="margin-block-start: var(--space-4); border: 3px solid var(--color-danger); border-radius: var(--radius-md); background-color: var(--color-surface-raised); padding: var(--space-4)">
+      <h2 id="pilne-m" style="font-size: 1.25rem; color: var(--color-danger)">Pilne</h2>
+      <div style="display: flex; flex-direction: column; gap: var(--space-4); margin-block-start: var(--space-3)">
+        <div style="display: flex; flex-direction: column; gap: var(--space-1)">
+          <span style="font-weight: 600">Pogotowie ratunkowe</span>
+          <a href="tel:112" class="btn btn--primary" style="font-size: 1.375rem; font-variant-numeric: tabular-nums">112 · zadzwoń</a>
+          <span class="row__meta">Całodobowo</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-1)">
+          <span style="font-weight: 600">Szpitalny Oddział Ratunkowy</span>
+          <a href="tel:+48587640116" class="btn btn--primary" style="font-size: 1.25rem; font-variant-numeric: tabular-nums">58 764 01 16</a>
+          <span class="row__meta">Całodobowo, Nowe Ogrody 1-6</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: var(--space-1)">
+          <span style="font-weight: 600">Nocna i świąteczna opieka</span>
+          <span class="todo">[NUMER DO UZUPEŁNIENIA]</span>
+          <span class="row__meta">Obecny serwis podaje tu tylko link „TUTAJ”</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search -->
+    <section aria-labelledby="szukaj-m" class="section">
+      <h2 id="szukaj-m">Znajdź numer</h2>
+      <form style="display: flex; flex-direction: column; gap: var(--space-3); margin-block-start: var(--space-3)">
+        <label for="szukaj-m-input" style="font-weight: 600">Nazwa komórki</label>
+        <input id="szukaj-m-input" type="search" placeholder="np. rejestracja" style="min-height: var(--target-min); width: 100%; padding: var(--space-2) var(--space-3); border: 2px solid var(--color-border-strong); border-radius: var(--radius-sm); background-color: var(--color-surface); color: var(--color-text); font: inherit">
+        <button type="submit" class="btn btn--primary">Filtruj</button>
+      </form>
+      <span class="anno" style="margin-block-start: var(--space-2)">bez JS: POST na stronę wyników</span>
+    </section>
+
+    <!-- Kopernik -->
+    <section aria-labelledby="kopernik-m" class="section">
+      <h2 id="kopernik-m">Szpital im. M. Kopernika</h2>
+      <p>ul. Nowe Ogrody 1-6</p>
+      <div style="margin-block-start: var(--space-2)">
+        <div class="row">
+          <span class="row__label">Szpitalny Oddział Ratunkowy</span>
+          <a href="tel:+48587640116" class="row__tel">58 764 01 16</a>
+          <span class="row__meta">Całodobowo</span>
+        </div>
+        <div class="row">
+          <span class="row__label">Centrala</span>
+          <a href="tel:+48587640100" class="row__tel">58 764 01 00</a>
+          <span class="row__meta">Pon.-pt. 7:00-15:00</span>
+        </div>
+        <div class="row">
+          <span class="row__label">Rejestracja przychodni</span>
+          <a href="tel:+48587723950" class="row__tel">58 772 39 50</a>
+          <span class="row__meta"><span class="todo" style="min-height: auto">[GODZINY]</span></span>
+        </div>
+        <div class="row">
+          <span class="row__label">Rejestracja diagnostyki obrazowej</span>
+          <a href="tel:+48587640200" class="row__tel">58 764 02 00</a>
+          <a href="tel:+48587640300" class="row__tel">58 764 03 00</a>
+          <span class="row__meta"><span class="todo" style="min-height: auto">[GODZINY]</span></span>
+        </div>
+        <div class="row">
+          <span class="row__label">Sekretariat zarządu</span>
+          <a href="tel:+48587640142" class="row__tel">58 764 01 42</a>
+          <span class="row__meta">Sprawy administracyjne</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Other facilities -->
+    <section aria-labelledby="placowki-m" class="section">
+      <h2 id="placowki-m">Pozostałe placówki</h2>
+      <div style="margin-block-start: var(--space-2)">
+        <div class="row">
+          <span class="row__label">Szpital św. Wojciecha</span>
+          <a href="tel:+48587684000" class="row__tel">58 768 40 00</a>
+          <span class="row__meta">al. Jana Pawła II 50</span>
+        </div>
+        <div class="row">
+          <span class="row__label">Wojewódzkie Centrum Onkologii</span>
+          <a href="tel:+48583419348" class="row__tel">58 341 93 48</a>
+          <span class="row__meta">ul. Skłodowskiej-Curie 2</span>
+        </div>
+        <div class="row">
+          <span class="row__label">COPERNICUS Stomatologia</span>
+          <a href="tel:+48585203837" class="row__tel">58 520 38 37</a>
+          <span class="row__meta">al. Zwycięstwa 39</span>
+        </div>
+        <div class="row">
+          <span class="row__label">COPERNICUS Profilaktyka</span>
+          <a href="tel:+48583005676" class="row__tel">58 300 56 76</a>
+          <span class="row__meta">wew. 101, ul. Wałowa 27</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Registration -->
+    <section aria-labelledby="rejestracja-m" class="section">
+      <h2 id="rejestracja-m">Rejestracja i diagnostyka</h2>
+      <div style="margin-block-start: var(--space-2)">
+        <div class="row">
+          <span class="row__label">Rejestracja do poradni specjalistycznych</span>
+          <span class="todo">[NUMER DO UZUPEŁNIENIA]</span>
+        </div>
+        <div class="row">
+          <span class="row__label">Zakłady Diagnostyki Obrazowej</span>
+          <a href="tel:+48587640200" class="row__tel">58 764 02 00</a>
+        </div>
+        <div class="row">
+          <span class="row__label">Infolinia onkologiczna</span>
+          <span class="todo">[NUMER DO UZUPEŁNIENIA]</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Media -->
+    <section aria-labelledby="media-m" class="section">
+      <h2 id="media-m">Dla mediów i instytucji</h2>
+      <div style="margin-block-start: var(--space-2)">
+        <div class="row">
+          <span class="row__label">Rzecznik prasowy</span>
+          <span class="todo">[NUMER DO UZUPEŁNIENIA]</span>
+        </div>
+        <div class="row">
+          <span class="row__label">Zespół Kontroli ds. Zakażeń</span>
+          <span class="todo">[NUMER DO UZUPEŁNIENIA]</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Fallback -->
+    <section aria-labelledby="brak-m" class="section" style="border: 2px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-4); background-color: var(--color-surface-raised)">
+      <h2 id="brak-m" style="font-size: 1.25rem">Nie ma tu numeru?</h2>
+      <p style="margin-block-end: var(--space-3)">Zadzwoń na centralę najbliższej placówki albo zgłoś nam problem.</p>
+      <div style="display: flex; flex-direction: column; gap: var(--space-3); margin-block-start: var(--space-3)">
+        <a href="#" class="btn btn--secondary">Wszystkie dane kontaktowe</a>
+        <a href="#" class="btn btn--secondary">Zgłoś problem z dostępnością</a>
+      </div>
+    </section>
+
+  </main>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light","section":"Motyw"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { theme: this.props.theme ?? 'light' };
+  }
+}
+</script>
+</body>
+</html>

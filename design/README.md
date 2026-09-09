@@ -48,7 +48,11 @@ artifact is ahead of `canvas/*.dc.html`.
 Record the published canvas URL in this file when it exists, so any later session finds it
 without searching the conversation history.
 
-Canvas URL: not created yet.
+Canvas URL: https://claude.ai/code/artifact/5bb4b191-1ccb-4324-bc8d-13ef3d7c7ac3
+
+Phase 1 artboards, seeded 2026-09-08: `/wazne-telefony` and the site header, each at 1280 px and
+360 px. The sources are in `canvas/`; they are the drafts as first published, so re-export after
+editing in the browser (step 4 of `workflow.md`) before any spec is generated from them.
 
 ## Folder layout
 

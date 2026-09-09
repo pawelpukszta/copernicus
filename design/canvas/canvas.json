@@ -1,0 +1,69 @@
+{
+  "artboards": [
+    {
+      "file": "HeaderDesktop.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1280,
+      "h": 420,
+      "title": "Nagłówek · 1280"
+    },
+    {
+      "file": "HeaderMobile.dc.html",
+      "x": 1440,
+      "y": 0,
+      "w": 360,
+      "h": 780,
+      "title": "Nagłówek · 360"
+    },
+    {
+      "file": "Main.dc.html",
+      "x": 0,
+      "y": 620,
+      "w": 1280,
+      "h": 3320,
+      "title": "/wazne-telefony · 1280"
+    },
+    {
+      "file": "PhonesMobile.dc.html",
+      "x": 1440,
+      "y": 940,
+      "w": 360,
+      "h": 3520,
+      "title": "/wazne-telefony · 360"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "map-header",
+      "x": 1900,
+      "y": 0,
+      "w": 340,
+      "text": "Nagłówek: mapowanie na komponenty\n\nSkip link → plain HTML (<a>)\nNawigacja → plain HTML <ul><a>; Menu/MenuTrigger tylko jako wzbogacenie na wąskich ekranach\nRozmiar tekstu → ToggleButtonGroup\nKontrast → ToggleButton\nJęzyk → Select (w formularzu) albo linki\nSzukaj → SearchField + Button\nPortal Pacjenta → Link, oznaczony jako system zewnętrzny\nPasek 112 → plain HTML, nigdy overlay\n\nTokeny: --color-danger na pasku pilnym (biały tekst 9.28:1), --target-min na każdym celu."
+    },
+    {
+      "id": "map-phones",
+      "x": 1900,
+      "y": 700,
+      "w": 340,
+      "text": "/wazne-telefony: mapowanie\n\nOkruszki → Breadcrumbs\nKarta „Pilne” → plain HTML, renderowana na serwerze\nFiltr → SearchField + Select + Button; bez JS zwykły formularz POST na /szukaj\nTabele → Table/TableHeader/Row/Cell; sortowanie jako link z serwera, nie JS\nNumery → <a href=\"tel:\">, tabular-nums, min 44 px\n\nŻadnej treści w Disclosure ani w overlayu: to jest strona, po której się skanuje."
+    },
+    {
+      "id": "decyzje",
+      "x": 1900,
+      "y": 1400,
+      "w": 340,
+      "text": "Trzy decyzje w tym kierunku\n\n1. Zero akordeonów. Obecna strona ma 11 zwiniętych grup, więc nic nie da się przeskanować ani znaleźć przez Ctrl+F. Tu wszystko jest otwarte, grupowane nagłówkami.\n\n2. Pilne na górze, osobną kartą, plus stały pasek 112 w nagłówku. Priorytetem jest ktoś zdenerwowany, kto szuka numeru.\n\n3. Numery w jednym formacie, 58 764 01 00. Obecny serwis pisze ten sam numer trzy sposobami."
+    },
+    {
+      "id": "braki-tresci",
+      "x": 1900,
+      "y": 2150,
+      "w": 340,
+      "text": "Braki w treści, znalezione na obecnej stronie\n\nWszystko w ramkach [DO UZUPEŁNIENIA] to luka po stronie klienta, nie placeholder projektowy:\n\n• Nocna i świąteczna opieka: grupa zawiera tylko link „TUTAJ”, bez numeru. To też 2.4.9.\n• Rejestracja do poradni, infolinia onkologiczna, rzecznik, zespół zakażeń: grupy istnieją, numerów nie sprawdziłem.\n• Godziny dostępności ma tylko część wpisów.\n\nTo lista pytań do redakcji, zanim powstanie specyfikacja ekranu."
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

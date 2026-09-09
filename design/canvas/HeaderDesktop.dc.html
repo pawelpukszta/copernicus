@@ -1,0 +1,247 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    body { margin: 0; }
+    *, *::before, *::after { box-sizing: border-box; }
+
+    .cp {
+      --color-surface: #ffffff;
+      --color-surface-raised: #f4f6f8;
+      --color-surface-sunken: #e8ecf0;
+      --color-text: #14181c;
+      --color-text-muted: #4a5560;
+      --color-text-inverse: #ffffff;
+      --color-primary: #0b4a6f;
+      --color-primary-hover: #093c5a;
+      --color-primary-active: #072e45;
+      --color-danger: #8a1c1c;
+      --color-success: #14562c;
+      --color-warning: #6b4400;
+      --color-border: #5b6672;
+      --color-border-strong: #14181c;
+      --color-focus: #0b4a6f;
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --target-min: 2.75rem;
+      --radius-sm: 0.25rem;
+      --radius-md: 0.5rem;
+
+      font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      background-color: var(--color-surface);
+      color: var(--color-text);
+    }
+
+    .cp[data-theme='dark'] {
+      --color-surface: #0d1116;
+      --color-surface-raised: #161c23;
+      --color-surface-sunken: #080b0e;
+      --color-text: #eef3f7;
+      --color-text-muted: #b9c4ce;
+      --color-text-inverse: #0d1116;
+      --color-primary: #8fc7ea;
+      --color-primary-hover: #a9d5f1;
+      --color-primary-active: #c3e2f6;
+      --color-danger: #ff9d9d;
+      --color-success: #86dfa6;
+      --color-warning: #f0c66b;
+      --color-border: #9aa7b3;
+      --color-border-strong: #eef3f7;
+      --color-focus: #8fc7ea;
+    }
+
+    .cp a { color: var(--color-primary); text-decoration-thickness: 0.08em; text-underline-offset: 0.2em; }
+    .cp a:hover { color: var(--color-primary-hover); }
+
+    .cp .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      min-height: var(--target-min);
+      min-width: var(--target-min);
+      padding: var(--space-2) var(--space-4);
+      border: 2px solid transparent;
+      border-radius: var(--radius-md);
+      font: inherit;
+      font-weight: 600;
+      line-height: 1.2;
+      text-decoration: none;
+    }
+    .cp .btn--primary { background-color: var(--color-primary); color: var(--color-text-inverse); }
+    .cp .btn--secondary { background-color: var(--color-surface); color: var(--color-text); border-color: var(--color-border-strong); }
+
+    .cp .navlink {
+      display: inline-flex;
+      align-items: center;
+      min-height: var(--target-min);
+      padding-inline: var(--space-3);
+      color: var(--color-text);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .cp .navlink[data-current='true'] {
+      box-shadow: inset 0 -4px 0 0 var(--color-primary);
+    }
+
+    .cp .util {
+      display: inline-flex;
+      align-items: center;
+      min-height: var(--target-min);
+      padding-inline: var(--space-3);
+      border: 2px solid transparent;
+      border-radius: var(--radius-sm);
+      background: none;
+      color: var(--color-text);
+      font: inherit;
+      font-size: 0.9375rem;
+      text-decoration: none;
+      gap: var(--space-2);
+    }
+    .cp .util[data-pressed='true'] {
+      border-color: var(--color-border-strong);
+      background-color: var(--color-surface);
+      font-weight: 700;
+    }
+
+    .cp .anno {
+      font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.35;
+      color: var(--color-text-muted);
+      border: 1px dashed var(--color-border);
+      border-radius: 3px;
+      padding: 2px 6px;
+      white-space: nowrap;
+    }
+  </style>
+</helmet>
+
+<div class="cp" data-theme="{{theme}}" style="min-height: 100%; padding: 0 0 var(--space-6)">
+
+  <!-- Skip link, shown here in its focused state -->
+  <div style="display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-6) 0">
+    <a href="#main" class="btn btn--primary" style="border-radius: var(--radius-md)">Przejdź do treści</a>
+    <span class="anno">SkipLink · plain HTML · widoczny dopiero po sfokusowaniu</span>
+  </div>
+
+  <!-- Utility bar -->
+  <div style="margin-top: var(--space-3); border-block-end: 2px solid var(--color-border); background-color: var(--color-surface-raised)">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding: var(--space-2) var(--space-6)">
+      <span style="font-size: 0.9375rem; color: var(--color-text-muted)">Copernicus Podmiot Leczniczy sp. z o.o.</span>
+      <div style="display: flex; align-items: center; gap: var(--space-1)">
+        <div style="display: flex; align-items: center; gap: var(--space-1); margin-inline-end: var(--space-2)">
+          <span style="font-size: 0.9375rem; color: var(--color-text-muted); margin-inline-end: var(--space-1)">Rozmiar tekstu</span>
+          <button type="button" class="util" data-pressed="true" style="font-size: 0.9375rem">A</button>
+          <button type="button" class="util" style="font-size: 1.125rem">A</button>
+          <button type="button" class="util" style="font-size: 1.375rem">A</button>
+        </div>
+        <button type="button" class="util">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 3v18"></path>
+            <path d="M12 3a9 9 0 0 1 0 18"></path>
+          </svg>
+          Kontrast
+        </button>
+        <a href="#" class="util">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M8 13V5a1.5 1.5 0 0 1 3 0v6"></path>
+            <path d="M11 11V4.5a1.5 1.5 0 0 1 3 0V11"></path>
+            <path d="M14 11V6a1.5 1.5 0 0 1 3 0v7a7 7 0 0 1-7 7H9a5 5 0 0 1-5-5v-2a1.5 1.5 0 0 1 3 0"></path>
+          </svg>
+          Tłumacz języka migowego
+        </a>
+        <a href="#" class="util">PL</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main bar -->
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-8); padding: var(--space-4) var(--space-6)">
+    <div style="display: flex; align-items: center; gap: var(--space-3)">
+      <div style="width: 44px; height: 44px; border: 2px solid var(--color-border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--color-text-muted); text-align: center; line-height: 1.1">LOGO<br>KLIENTA</div>
+      <div>
+        <div style="font-size: 1.375rem; font-weight: 700; letter-spacing: 0.02em">COPERNICUS</div>
+        <div style="font-size: 0.9375rem; color: var(--color-text-muted)">Szpitale w Gdańsku</div>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: var(--space-4)">
+      <form style="display: flex; align-items: stretch; gap: var(--space-2)">
+        <label style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%)" for="q">Szukaj w serwisie</label>
+        <input id="q" type="search" placeholder="Szukaj, np. kardiologia" style="min-height: var(--target-min); min-width: 260px; padding: var(--space-2) var(--space-3); border: 2px solid var(--color-border-strong); border-radius: var(--radius-sm); background-color: var(--color-surface); color: var(--color-text); font: inherit">
+        <button type="submit" class="btn btn--secondary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <path d="m16.5 16.5 4 4"></path>
+          </svg>
+          Szukaj
+        </button>
+      </form>
+      <a href="#" class="btn btn--secondary">
+        Portal Pacjenta
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M14 4h6v6"></path>
+          <path d="M20 4 10 14"></path>
+          <path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div style="border-block: 2px solid var(--color-border)">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); padding-inline: var(--space-6)">
+      <nav aria-label="Nawigacja główna">
+        <ul style="display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1); list-style: none; margin: 0; padding: 0">
+          <li><a href="#" class="navlink" data-current="true">Start</a></li>
+          <li><a href="#" class="navlink">Dla pacjenta</a></li>
+          <li><a href="#" class="navlink">Oddziały</a></li>
+          <li><a href="#" class="navlink">Poradnie</a></li>
+          <li><a href="#" class="navlink">Placówki</a></li>
+          <li><a href="#" class="navlink">Aktualności</a></li>
+          <li><a href="#" class="navlink">Kontakt</a></li>
+        </ul>
+      </nav>
+      <a href="#" class="btn btn--primary" style="margin-block: var(--space-2)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M6.5 3h3l1.5 4-2 1.5a11 11 0 0 0 5 5L15.5 11l4 1.5v3a2 2 0 0 1-2.2 2A15.5 15.5 0 0 1 4.5 5.2 2 2 0 0 1 6.5 3z"></path>
+        </svg>
+        Ważne telefony
+      </a>
+    </div>
+  </div>
+
+  <!-- Emergency strip -->
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4); padding: var(--space-3) var(--space-6); background-color: var(--color-danger); color: #ffffff">
+    <span style="font-weight: 700">W nagłym zagrożeniu życia dzwoń</span>
+    <a href="tel:112" style="display: inline-flex; align-items: center; min-height: var(--target-min); padding-inline: var(--space-3); border: 2px solid #ffffff; border-radius: var(--radius-md); color: #ffffff; font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; text-decoration: none">112</a>
+    <span style="opacity: 1">Szpitalny Oddział Ratunkowy, Nowe Ogrody 1-6:</span>
+    <a href="tel:+48587640116" style="color: #ffffff; font-weight: 700; font-variant-numeric: tabular-nums">58 764 01 16</a>
+    <span style="margin-inline-start: auto"><span class="anno" style="color: #ffffff; border-color: #ffffff">plain HTML · zawsze widoczny, nie w overlayu</span></span>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light","section":"Motyw"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { theme: this.props.theme ?? 'light' };
+  }
+}
+</script>
+</body>
+</html>

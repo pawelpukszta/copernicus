@@ -8,3 +8,7 @@ pnpm-lock.yaml
 
 # Generated; must stay byte-identical for design:inventory:check
 design/component-exports.generated.md
+
+# Design canvas artboards: authored for the canvas editor, reformatting breaks nothing
+# but produces noisy diffs against what the editor writes back.
+design/canvas/
