@@ -39,14 +39,14 @@
       "x": 1900,
       "y": 0,
       "w": 340,
-      "text": "Nagłówek: mapowanie na komponenty\n\nSkip link → plain HTML (<a>)\nNawigacja → plain HTML <ul><a>; Menu/MenuTrigger tylko jako wzbogacenie na wąskich ekranach\nRozmiar tekstu → ToggleButtonGroup\nKontrast → ToggleButton\nJęzyk → Select (w formularzu) albo linki\nSzukaj → SearchField + Button\nPortal Pacjenta → Link, oznaczony jako system zewnętrzny\nPasek 112 → plain HTML, nigdy overlay\n\nTokeny: --color-danger na pasku pilnym (biały tekst 9.28:1), --target-min na każdym celu."
+      "text": "Nagłówek: mapowanie na komponenty\n\nSkip link → plain HTML (<a>)\nNawigacja → plain HTML <ul><a>; Menu/MenuTrigger tylko jako wzbogacenie na wąskich ekranach\nRozmiar tekstu → ToggleButtonGroup\nKontrast → ToggleButton\nJęzyk → linki albo natywny <select> w formularzu, nie React Aria Select\nSzukaj → SearchField + Button\nPortal Pacjenta → Link, oznaczony jako system zewnętrzny\nPasek 112 → plain HTML, nigdy overlay\n\nTokeny: --color-danger na pasku pilnym (biały tekst 9.28:1), --target-min na każdym celu."
     },
     {
       "id": "map-phones",
       "x": 1900,
       "y": 700,
       "w": 340,
-      "text": "/wazne-telefony: mapowanie\n\nOkruszki → Breadcrumbs\nKarta „Pilne” → plain HTML, renderowana na serwerze\nFiltr → SearchField + Select + Button; bez JS zwykły formularz POST na /szukaj\nTabele → Table/TableHeader/Row/Cell; sortowanie jako link z serwera, nie JS\nNumery → <a href=\"tel:\">, tabular-nums, min 44 px\n\nŻadnej treści w Disclosure ani w overlayu: to jest strona, po której się skanuje."
+      "text": "/wazne-telefony: mapowanie\n\nOkruszki → Breadcrumbs\nKarta „Pilne” → plain HTML, renderowana na serwerze\nFiltr → SearchField (renderuje prawdziwy <input type=\"search\">) + natywny <select> + Button. React Aria Select jest przed hydratacją martwym przyciskiem, a działający select ma aria-hidden i tabindex=-1.\nTabele → zwykły <table>, nie Table: Table to role=\"grid\", czyli interaktywny widget 2D, a tu nie ma zaznaczania ani sortowania po kliencie. Sortowanie linkiem z serwera.\nNumery → <a href=\"tel:\">, tabular-nums, min 44 px\n\nŻadnej treści w Disclosure ani w overlayu: to strona, po której się skanuje.\nPełne uzasadnienie z wyrenderowanym DOM: design/screens/wazne-telefony.md"
     },
     {
       "id": "decyzje",
