@@ -44,6 +44,14 @@ safe there and what to use instead when they are not.
 | Files and drag     | `FileTrigger`, `DropZone`, `DropIndicator`                                                                                                                  | no                                           | a plain `<input type="file">` must remain available                                                  |
 | Colour pickers     | `ColorPicker` and its parts                                                                                                                                 | no                                           | not needed on this site                                                                              |
 
+One exception the table does not cover, established by `screens/wazne-telefony.md`: where a
+control must work before hydration and React Aria would only add refinement, the **native control
+wins**. The filter on that route uses `<input type="search">` and `<select>` rather than
+`SearchField` and `Select`, because a React Aria `Select` renders a trigger button plus a popover
+that is inert until hydration, so the server-rendered state would look interactive and not be. The
+cost is a control that does not match `Select` elsewhere in the product, accepted deliberately. Use
+this exception only on server-critical paths, and record it in the screen spec each time.
+
 Two rules follow from the table and belong in every screen spec:
 
 - **Main navigation is a list of links first.** `Menu` and `NavigationTree` improve it; they do not

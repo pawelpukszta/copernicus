@@ -66,4 +66,5 @@ design/
   component-exports.generated.md     generated from the installed react-aria-components
   canvas/                            .dc.html artboard sources, versioned
   screens/                           per-route handoff specs, the implementation contract
+                                     first one: screens/wazne-telefony.md
 ```
