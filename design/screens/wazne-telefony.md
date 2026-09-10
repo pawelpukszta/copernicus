@@ -141,36 +141,46 @@ in mobile rows, `1rem` in table cells, always `font-weight: 700` and
 
 ## Components
 
-| Block                | Component                                                    | Props / markup                                                                | Needs JS                                    |
-| -------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------- |
-| Breadcrumbs          | `Breadcrumbs`, `Breadcrumb` wrappers                         | last item `aria-current="page"`, not a link                                   | no                                          |
-| Page heading         | plain `<h1>`                                                 | one per page                                                                  | no                                          |
-| Pilne card           | plain HTML `<section aria-labelledby>`                       | never a `Disclosure`                                                          | no                                          |
-| Phone number         | plain `<a href="tel:+48…">`                                  | visible text is the display format; `aria-label` omitted so 2.5.3 holds       | no                                          |
-| Pilne number, mobile | `Button` wrapper rendered as `<a>` via `elementType`         | `variant="primary"`; full width                                               | no                                          |
-| Filter, search field | native `<input type="search" name="q">`                      | **not** `SearchField`, see deviations                                         | no                                          |
-| Filter, facility     | native `<select name="placowka">`                            | **not** `Select`, see deviations                                              | no                                          |
-| Filter, submit       | `Button` wrapper                                             | `type="submit"`, `variant="primary"`                                          | no                                          |
-| Group table          | `Table`, `TableHeader`, `Column`, `TableBody`, `Row`, `Cell` | `aria-label` per table = the facility name; `<caption>` carries the sort hint | renders without JS; sorting is server links |
-| Group rows, mobile   | plain HTML `<div>` rows                                      | not a table below 640 px                                                      | no                                          |
-| Fallback actions     | `Button` wrappers as `<a>`                                   | `variant="secondary"`                                                         | no                                          |
-| Content-gap marker   | plain HTML `<span>`                                          | design time only                                                              | no                                          |
+| Block                | Component                                                 | Props / markup                                                          | Needs JS |
+| -------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------- | -------- |
+| Breadcrumbs          | `Breadcrumbs`, `Breadcrumb` wrappers                      | last item `aria-current="page"`, not a link                             | no       |
+| Page heading         | plain `<h1>`                                              | one per page                                                            | no       |
+| Pilne card           | plain HTML `<section aria-labelledby>`                    | never a `Disclosure`                                                    | no       |
+| Phone number         | plain `<a href="tel:+48…">`                               | visible text is the display format; `aria-label` omitted so 2.5.3 holds | no       |
+| Pilne number, mobile | `Button` wrapper rendered as `<a>` via `elementType`      | `variant="primary"`; full width                                         | no       |
+| Filter, search field | `SearchField` wrapper (`Label`, `Input`, clear `Button`)  | `name="q"`; renders a real `<input type="search">` before hydration     | no       |
+| Filter, facility     | native `<select name="placowka">`                         | **not** `Select`; see the pre-hydration evidence below                  | no       |
+| Filter, submit       | `Button` wrapper                                          | `type="submit"`, `variant="primary"`                                    | no       |
+| Group table          | plain `<table>` with `<caption>`, `<thead>`, `<th scope>` | **not** `Table`; see the pre-hydration evidence below                   | no       |
+| Group rows, mobile   | plain HTML `<div>` rows                                   | not a table below 640 px                                                | no       |
+| Fallback actions     | `Button` wrappers as `<a>`                                | `variant="secondary"`                                                   | no       |
+| Content-gap marker   | plain HTML `<span>`                                       | design time only                                                        | no       |
 
-### Deviations from the artboard annotations
+### Component choice: measured, not assumed
 
-The artboard note maps the filter to `SearchField + Select + Button`. This spec uses native
-`<input type="search">` and `<select>` instead, and the note should be updated.
+React Aria is the default. Three components on this route deviate, and the reason is not "some
+users disable JavaScript" but what each component's **pre-hydration DOM actually is**. Rendered
+with `renderToStaticMarkup` from `react-aria-components@1.21.1`:
 
-Reason: the filter must work with no JavaScript, and React Aria's `Select` renders a button plus a
-popover that is inert before hydration, so the server-rendered state would be a control that looks
-interactive and is not. A native select works immediately, submits with the form, and gets the
-platform's own mobile picker. What React Aria would add here is typeahead over a six-item list,
-which is not worth an inert control on the one page a panicking visitor uses.
+| Component     | Server-rendered DOM                                                                                                                                                                                | Verdict                                                                                                                                                                                                                                                                                                                                                   |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SearchField` | `<div><label><input type="search" name="q" value=""><button tabindex="-1" aria-label="Clear search">`                                                                                              | **Use it.** The input is real, typeable, and submits with the form. Only the clear button is inert, and that is a nicety, not the task.                                                                                                                                                                                                                   |
+| `Select`      | `<button aria-haspopup="listbox" aria-expanded="false"><span>Select an item</span></button>` plus a `<div aria-hidden="true" data-react-aria-prevent-focus><select tabindex="-1" name="placowka">` | **Not here.** The visible control is a dead button; the working `<select>` is hidden from assistive technology and from the keyboard. Worse, `SelectValue` renders the untranslated English string `Select an item` unless a placeholder is passed.                                                                                                       |
+| `Table`       | A complete `<table role="grid" tabindex="0">` with `<th role="columnheader">` and `<td role="gridcell" tabindex="-1">`                                                                             | **Not here.** All content is present, so this is not a JavaScript argument: the problem is `role="grid"`, an interactive 2D widget that puts screen readers into grid navigation. This route has no selection and no client-side sorting, so plain table semantics describe the content more accurately. Use `Table` where selection or resizing is real. |
+| `Disclosure`  | Panel is `hidden` and `aria-hidden="true"`                                                                                                                                                         | Content genuinely absent before hydration, as the inventory says.                                                                                                                                                                                                                                                                                         |
+| `Tabs`        | Only the selected `TabPanel` renders                                                                                                                                                               | Same.                                                                                                                                                                                                                                                                                                                                                     |
 
-Consequence to accept: the facility control looks like a native widget rather than a designed one,
-so it will not match `Select` elsewhere in the product. That inconsistency is deliberate and
-documented here rather than being discovered later. Revisit only if the list grows past ~15
-facilities, when typeahead starts to matter.
+So the facility filter uses a native `<select>` because React Aria's version is a dead button
+before hydration and adds only typeahead over six options; the tables are plain tables because
+`role="grid"` overstates what they are; and the search field uses `SearchField`, which an earlier
+draft of this spec wrongly replaced.
+
+Consequence to accept for the select: it renders as the platform's own widget rather than a
+designed one, so it will not match `Select` elsewhere in the product. On mobile that is an
+improvement, since the platform picker has larger targets and works with the operating system's own
+assistive features. Revisit if the list passes about fifteen facilities, when typeahead starts to
+matter, and then use the progressive pattern (native on the server, upgraded after hydration)
+rather than a bare `Select`.
 
 ## Server-rendered versus enhanced
 
@@ -290,6 +300,10 @@ Implementation is done when these pass, in addition to `pnpm verify`:
 10. Unit test: the display formatter turns `+48587640116` into `58 764 01 16` and refuses a value
     that is not E.164.
 11. Unit test: a record with a `fax` value inside `phones` fails validation.
+12. Unit test (`src/components/ssr-degradation.test.tsx`): `renderToStaticMarkup` of the wrappers
+    used on this route contains a real `<input type="search">` carrying its `name`, and every phone
+    is an `<a href="tel:…">`. This is what keeps the table above honest when React Aria is
+    upgraded, instead of re-arguing it.
 
 ## Open, before implementation
 

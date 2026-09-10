@@ -44,13 +44,29 @@ safe there and what to use instead when they are not.
 | Files and drag     | `FileTrigger`, `DropZone`, `DropIndicator`                                                                                                                  | no                                           | a plain `<input type="file">` must remain available                                                  |
 | Colour pickers     | `ColorPicker` and its parts                                                                                                                                 | no                                           | not needed on this site                                                                              |
 
-One exception the table does not cover, established by `screens/wazne-telefony.md`: where a
-control must work before hydration and React Aria would only add refinement, the **native control
-wins**. The filter on that route uses `<input type="search">` and `<select>` rather than
-`SearchField` and `Select`, because a React Aria `Select` renders a trigger button plus a popover
-that is inert until hydration, so the server-rendered state would look interactive and not be. The
-cost is a control that does not match `Select` elsewhere in the product, accepted deliberately. Use
-this exception only on server-critical paths, and record it in the screen spec each time.
+### When not to use a React Aria component
+
+React Aria is the default. It stops being the default only where one of two conditions holds, and
+both are checked against the component's real server-rendered DOM rather than argued:
+
+1. **The pre-hydration DOM has no usable control for the task.** `Select` renders a dead button
+   plus an `aria-hidden`, `tabindex="-1"` native select, so before hydration there is nothing a
+   visitor can operate. `SearchField` renders a real `<input type="search">` and is fine. The
+   difference is per component, never per library.
+2. **The component's role overstates the content.** `Table` is `role="grid"`, an interactive 2D
+   widget that puts screen readers into grid navigation. For a read-only data table with no
+   selection, plain table semantics describe it more accurately.
+
+Neither condition is about the share of visitors who switch JavaScript off. That share is about
+0.2%. The share who have it enabled and still do not receive it was measured at 0.9% by the UK
+Government Digital Service in 2013, five times larger and not a choice: corporate proxies, failed
+requests, script errors, abandoned loads. On top of that sits the window between first paint and
+hydration, which every visitor passes through and which lasts seconds on a poor connection. These
+two conditions are what make that window harmless without giving up the library.
+
+Record every deviation in the screen spec together with the rendered DOM that justifies it, and
+cover it in `src/components/ssr-degradation.test.tsx` so upgrading React Aria cannot silently
+change the answer.
 
 Two rules follow from the table and belong in every screen spec:
 
