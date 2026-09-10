@@ -69,6 +69,47 @@ design placeholder.
 | Rzecznik prasowy                            | **TO CONFIRM**             | not read                       |
 | Zespół Kontroli ds. Zakażeń                 | **TO CONFIRM**             | not read                       |
 
+## The same data also lives on /kontakt, and the two pages disagree
+
+Inspected 2026-09-09 at https://copernicus.gda.pl/kontakt. Same pattern: five collapsed groups,
+one per facility. What is inside them, however, is a different and much richer dataset than the
+phone page holds.
+
+The Wojewódzkie Centrum Onkologii group alone contains:
+
+| Unit                            | Phone                                | Email                             | Availability                |
+| ------------------------------- | ------------------------------------ | --------------------------------- | --------------------------- |
+| Sekretariat Dyrekcji            | 58 732 48 78, fax 58 341 93 48       | sekretariat.wco@copernicus.gda.pl | Mon-Fri 7:00-15:00          |
+| Rejestracja                     | 58 772 39 50                         | rejestracja.wco@copernicus.gda.pl | Mon-Fri 7:00-18:00          |
+| Mamma Centrum, sekretariat      | 58 345 20 68                         | a named person's mailbox          | not stated                  |
+| Diagnostyka obrazowa, budynek A | 605 956 682, 58 345 21 99            | -                                 | 7:30-18:00, Thu until 19:00 |
+| Diagnostyka obrazowa, budynek B | 691 609 691                          | -                                 | 7:30-18:00                  |
+| Zakład Rehabilitacji            | 58 772 39 50, odwołania 58 732 48 34 | rejestracja.wco@copernicus.gda.pl | not stated                  |
+
+Four findings follow, and they are the reason this question has to be settled before the screen
+spec is written.
+
+**7. A fax number is published as the contact number.** `/wazne-telefony` lists Wojewódzkie
+Centrum Onkologii as `58 341 93 48`. On `/kontakt` that exact number is the director's secretariat
+**fax**; the phone is 58 732 48 78. Someone following the phone page dials a fax machine. This is
+the clearest possible demonstration of what maintaining the same data twice costs.
+
+**8. One number serves many units.** `58 772 39 50` appears as the side-rail number on every page,
+as Kopernik's outpatient registration, as WCO's registration, and as WCO's rehabilitation
+registration. The content model must let many contact points share one number, or the redesign
+will invent four records that drift apart.
+
+**9. Availability is recorded richly here and not at all there.** `/kontakt` has hours per unit,
+including a Thursday exception; `/wazne-telefony` has hours for one entry out of fifteen. Same
+entities, two states of completeness.
+
+**10. A named person's mailbox is published as a unit contact.** One entry uses an individual's
+address rather than a role mailbox. That is a maintenance problem when the person changes roles and
+a personal-data question in its own right; the model should carry role mailboxes.
+
+Two smaller things: number formatting varies inside one page (`605-956-682`, `691 609 691`,
+`58 345 21 99`), and unit notes are written in shouting capitals ("PROFILAKTYKA SIMP, PŁATNE").
+
 ## What this dictates for the redesign
 
 1. `/wazne-telefony` becomes a top-level route, not a child of an editorial category.
@@ -79,3 +120,10 @@ design placeholder.
 5. Press, media and institutional contacts are a separate group from patient contacts.
 6. The nine TO CONFIRM rows are a content task for the client, with an owner and a date, before
    the screen spec is written.
+7. **One dataset, several views.** `/wazne-telefony`, `/kontakt` and the facility pages render the
+   same contact points for different jobs. They are never maintained separately: finding 7 above
+   is what separate maintenance produces.
+8. The current site's main navigation (O nas, BIP, Usługi medyczne, ABC Pacjenta, Ogłoszenia,
+   Kontakt, Tłumacz PJM) is organised around the institution. The redesign's navigation is
+   organised around what a visitor came to do, so it differs deliberately; that is a decision to
+   confirm with the client rather than a detail.

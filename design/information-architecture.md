@@ -77,10 +77,36 @@ need an import script, not manual re-entry.
 `category`. Prices change by decision and must be versioned, since a superseded price is a
 document people refer back to.
 
-**Phone directory entry** (`ważny telefon`)
-`label`, `number`, `facility`, `category` (emergency, registration, department, administration),
-`availability`, `order`. This is the single most used piece of content on a hospital site and gets
-its own top-level route.
+**Contact point** (`punkt kontaktu`) - one record, several views
+`label`, `slug`, `facility`, `unit` (optional: department, clinic, building), `phones[]`
+(`number` in E.164, `label`, `note`), `fax` (optional, and never rendered as a phone),
+`email` (a role mailbox, not a person's), `availability` (opening hours plus exceptions),
+`category` (emergency, out-of-hours, registration, diagnostics, secretariat, administration,
+press, institutional), `audience` (patient, institution, media), `order`, `lastReviewedAt`.
+
+This is the single most important entity on a hospital site, and the reason it is a **contact
+point** rather than a "phone number" is that the same record has to serve three pages without
+being maintained three times:
+
+| View               | Route              | Job                                 | What it renders                                                                                                                                                                                                                                                                          |
+| ------------------ | ------------------ | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Task view          | `/wazne-telefony`  | "I need to call someone now"        | Emergency and out-of-hours first, then registration and diagnostics, grouped by facility, with availability. Phones only; an email appears as a secondary line where the record has one and it is genuinely an alternative (cancelling an appointment), never as the primary affordance. |
+| Institutional view | `/kontakt`         | "I am writing to this organisation" | Per facility: address, how to get there, parking, building accessibility, secretariat, role mailboxes, ePUAP and e-Doręczenia, NIP, KRS, REGON, the data protection officer, the complaints route.                                                                                       |
+| Local view         | `/szpitale/[slug]` | "Everything about this place"       | The facility's own contact points beside its departments, clinics and practical information.                                                                                                                                                                                             |
+
+Rules that follow, and that the screen specs must not break:
+
+- A contact point is authored once. Every view is a query over the same records, filtered by
+  `category` and `audience`. Nothing is retyped per page.
+- Many contact points may share one number (`58 772 39 50` serves at least four units today), so
+  the number is a value on the record, not the record's identity.
+- `fax` is a separate field precisely so no view can render it as something to call. The current
+  site publishes a fax as WCO's contact number; the model makes that mistake unrepresentable.
+- `email` holds a role mailbox. A named person's address is not a contact point.
+- `/wazne-telefony` stays a **shortlist**, not the full directory: the task-oriented entries plus a
+  link to the per-facility directory. A page that grows to hold every number becomes the page it
+  replaced.
+- `availability` is required. "Not stated" is a content gap with an owner, not an acceptable value.
 
 **Static page** (`strona informacyjna`)
 `title`, `slug`, `body`, `parent`, `lastReviewedAt`. The review date matters: medical information
