@@ -1,0 +1,78 @@
+/*
+ * Shared layout for the two plain prose routes that exist so the actions on
+ * /wazne-telefony lead somewhere. Neither has a screen spec yet, so neither has a design:
+ * this is type on a page, inside the same tokens as everything else.
+ */
+
+.cp-info {
+  padding: var(--space-6) var(--space-3) var(--space-12);
+}
+
+@media (min-width: 640px) {
+  .cp-info {
+    padding-inline: var(--space-4);
+  }
+}
+
+@media (min-width: 1024px) {
+  .cp-info {
+    padding-inline: var(--space-8);
+  }
+}
+
+.cp-info h1 {
+  font-size: 1.75rem;
+  margin-block: var(--space-4) var(--space-3);
+}
+
+.cp-info h2 {
+  font-size: 1.25rem;
+  margin-block: var(--space-8) var(--space-3);
+}
+
+.cp-info__pending {
+  padding: var(--space-3) var(--space-4);
+  border-inline-start: 4px solid var(--color-border);
+  background-color: var(--color-surface-raised);
+  color: var(--color-text-muted);
+}
+
+.cp-info__facilities {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cp-info__facility {
+  padding-block: var(--space-3);
+  border-block-end: 1px solid var(--color-border);
+}
+
+.cp-info__facility-name {
+  font-weight: 600;
+}
+
+.cp-info__address {
+  display: block;
+  color: var(--color-text-muted);
+  text-wrap: pretty;
+}
+
+.cp-info ul:not(.cp-info__facilities) {
+  max-width: var(--measure);
+  padding-inline-start: var(--space-6);
+}
+
+.cp-info li {
+  margin-block-end: var(--space-2);
+}
+
+@media (min-width: 1024px) {
+  .cp-info h1 {
+    font-size: 2rem;
+  }
+
+  .cp-info h2 {
+    font-size: 1.375rem;
+  }
+}

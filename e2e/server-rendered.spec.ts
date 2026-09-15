@@ -116,3 +116,33 @@ test.describe('/wazne-telefony without JavaScript', () => {
     await expect(page.getByText('Godziny do potwierdzenia').first()).toBeVisible();
   });
 });
+
+/**
+ * Every internal link resolves. This exists because the fallback card on /wazne-telefony
+ * shipped pointing at two routes that did not exist yet, one of them the "report an
+ * accessibility problem" action: a dead end is a poor answer to someone who already could
+ * not use the page.
+ */
+test('no internal link on any route leads to a 404', async ({ page, request }) => {
+  const routes = ['/', '/wazne-telefony', '/kontakt', '/zglos-problem-dostepnosci'];
+  const broken: string[] = [];
+
+  for (const route of routes) {
+    await page.goto(route);
+
+    const hrefs = await page.evaluate(() =>
+      Array.from(document.querySelectorAll('a[href^="/"]')).map(
+        (a) => a.getAttribute('href') ?? '',
+      ),
+    );
+
+    for (const href of new Set(hrefs)) {
+      const target = href.split('#')[0] ?? '';
+      if (target === '') continue;
+      const response = await request.get(target);
+      if (response.status() !== 200) broken.push(`${route} -> ${href} (${response.status()})`);
+    }
+  }
+
+  expect(broken, `Dead internal links:\n${broken.join('\n')}`).toEqual([]);
+});

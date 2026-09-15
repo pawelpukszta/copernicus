@@ -13,7 +13,7 @@ const LEVEL = (process.env.A11Y_LEVEL ?? 'aa').toLowerCase();
 const AA_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'];
 const AAA_TAGS = ['wcag2aaa', 'wcag21aaa'];
 
-const ROUTES = ['/', '/wazne-telefony'];
+const ROUTES = ['/', '/wazne-telefony', '/kontakt', '/zglos-problem-dostepnosci'];
 
 /** 360 px is the narrow end the spec supports; 1280 px is the desktop artboard. */
 const WIDTHS = [360, 1280];

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { AccessibilityDemo } from '@/components/AccessibilityDemo';
+import { PhoneLink } from '@/components/PhoneLink';
+import { facilities, facilityOrder, text } from '@/content';
 import './page.css';
 
 export const metadata: Metadata = {
@@ -37,18 +39,27 @@ export default function HomePage() {
         </p>
 
         <section aria-labelledby="kontakt">
-          <h2 id="kontakt">Kontakt</h2>
-          {/* Server-rendered on purpose: this must work without JavaScript. */}
+          <h2 id="kontakt">Centrale placówek</h2>
+          {/*
+           * Server-rendered on purpose: this must work without JavaScript. Read from
+           * src/content rather than typed out here, because a number that exists in two
+           * places drifts: /wazne-telefony and /kontakt disagreed on the current site
+           * until one of them was publishing a fax as the number to call.
+           */}
           <ul className="cp-contact">
-            <li>
-              Centrala, Szpital im. M. Kopernika, ul. Nowe Ogrody 1-6:{' '}
-              <a href="tel:+48587640100">58 764 01 00</a>
-            </li>
-            <li>
-              Szpital św. Wojciecha, al. Jana Pawła II 50:{' '}
-              <a href="tel:+48587684000">58 768 40 00</a>
-            </li>
+            {facilityOrder.map((id) => {
+              const facility = facilities[id];
+              return (
+                <li key={id}>
+                  {text(facility.name)}, {text(facility.address)}:{' '}
+                  <PhoneLink phone={facility.switchboard} />
+                </li>
+              );
+            })}
           </ul>
+          <p>
+            Rejestracje, diagnostyka i numery pilne: <a href="/wazne-telefony">ważne telefony</a>.
+          </p>
         </section>
 
         <section aria-labelledby="dostepnosc">
@@ -68,7 +79,7 @@ export default function HomePage() {
       <footer className="cp-footer">
         <p>
           Masz problem z dostępnością tego serwisu?{' '}
-          <a href="mailto:dostepnosc@example.org">Napisz do nas</a>.
+          <a href="/zglos-problem-dostepnosci">Zgłoś go</a>.
         </p>
       </footer>
     </>
