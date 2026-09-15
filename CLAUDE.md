@@ -43,6 +43,13 @@ generates. `pnpm verify` already orders it correctly.
    rendered only on the client. This is the defect the whole project exists to fix.
 6. **Implement from the screen spec**, `design/screens/<route>.md`, not from the design canvas and
    not from a screenshot. The canvas is a picture with annotations; the spec is the contract.
+7. **User preferences live on `<html>` as data attributes, and an absent attribute means "follow
+   the system".** `data-theme` takes `light`, `dark` or a named high-contrast theme, never a
+   boolean. `data-font-scale` takes `1`, `2` or `3`. Nothing else may read or write those keys.
+   `docs/adr/0007-user-preferences-theme-contrast-text-size.md`.
+8. **Every human-readable string in `src/content/` is locale-keyed**, even while Polish is the only
+   locale, and `<html lang>` comes from the route. The language code for Ukrainian is `uk`.
+   `docs/adr/0008-internationalisation.md`.
 
 ## Conventions
 
@@ -72,3 +79,8 @@ docs/adr/                       Decisions with their trade-offs
   runtime. `docs/adr/0005-rendering-strategy-and-hosting.md`.
 - No CMS yet. Routes read from a typed module under `src/content/` until one is chosen; that
   module is the contract the CMS will have to satisfy.
+- The preference controls (theme, contrast, text size) and the language switcher are built as one
+  iteration of the loop after `/wazne-telefony`, not per route. Until then only their contract
+  exists: rules 7 and 8 above.
+- Translation is tiered. Only tier 1 is committed to all four languages; the table is in
+  `docs/adr/0008-internationalisation.md`.

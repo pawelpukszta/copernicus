@@ -136,6 +136,25 @@ The tooling is already level-aware. When the decision is taken:
 Nothing in the codebase has to be restructured for that, which is the point of building the
 AA baseline this way.
 
+## User preferences
+
+Three controls are offered in the header: text size, contrast and colour scheme. None of them is
+required by AA; they are kept because the current site has them and because 1.4.8 (AAA) asks for
+user-selectable colours. Their interaction model, storage, schedule and trade-offs are in
+[`adr/0007-user-preferences-theme-contrast-text-size.md`](adr/0007-user-preferences-theme-contrast-text-size.md).
+
+Two consequences land in this file:
+
+- The 200% reflow assertion has to be repeated at the maximum text scale, which is effectively
+  300%. A setting the site offers is a setting the site has to survive.
+- A high-contrast theme, when one is added, must not fight `forced-colors: active`. The Windows
+  High Contrast row of the matrix below covers the combination.
+
+Language is a separate axis with its own decision record,
+[`adr/0008-internationalisation.md`](adr/0008-internationalisation.md). The criteria it touches are
+3.1.1 Language of Page, 3.1.2 Language of Parts on the switcher itself, and 3.2.5 Change on Request
+(AAA), which is why no locale redirect happens on `Accept-Language`.
+
 ## Manual test matrix
 
 Run before every release, and for any PR touching navigation, forms or dialogs.
