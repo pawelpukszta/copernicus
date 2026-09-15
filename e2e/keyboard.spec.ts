@@ -57,9 +57,12 @@ test('the skip link is the first Tab stop (2.4.3 Focus Order)', async ({ page, i
   await expect(page.locator('.cp-skip-link')).toBeFocused();
 });
 
-test('interactive targets meet 2.5.8 (AA) and report the gap to 2.5.5 (AAA)', async ({ page }) => {
-  await page.goto('/');
-
+/**
+ * Measures every interactive target on the page the test has already opened, and reports
+ * the two thresholds separately. Extracted so /wazne-telefony can be measured at the three
+ * widths its spec names without a second copy of the exemption logic.
+ */
+async function assertTargetSizes(page: Page) {
   const targets = page.locator('a, button, input, select, textarea, [role="button"]');
   const count = await targets.count();
   expect(count).toBeGreaterThan(0);
@@ -117,7 +120,24 @@ test('interactive targets meet 2.5.8 (AA) and report the gap to 2.5.5 (AAA)', as
       [],
     );
   }
+}
+
+test('interactive targets meet 2.5.8 (AA) and report the gap to 2.5.5 (AAA)', async ({ page }) => {
+  await page.goto('/');
+  await assertTargetSizes(page);
 });
+
+/**
+ * Acceptance criterion 3 of design/screens/wazne-telefony.md: every phone link is at least
+ * 44 x 44 px at each of these widths. A number nobody can hit is a number nobody can dial.
+ */
+for (const width of [360, 768, 1280]) {
+  test(`phone targets hold up at ${width} px on /wazne-telefony`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto('/wazne-telefony');
+    await assertTargetSizes(page);
+  });
+}
 
 test('everything the keyboard reaches shows a focus indicator (2.4.7)', async ({
   page,
@@ -173,4 +193,66 @@ test('content stays usable at 200% zoom (1.4.4 Resize Text)', async ({ page }) =
 
   expect(horizontalOverflow, 'Page scrolls horizontally at 200% text size').toBe(false);
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+});
+
+/**
+ * Acceptance criterion 6: the focus order on /wazne-telefony matches the one the spec
+ * fixes. Collected as accessible names by tabbing, because that is what a keyboard user
+ * actually experiences; asserting the DOM order would pass even if CSS reordered the page.
+ */
+test('focus order on /wazne-telefony follows the page, not the source', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(!!isMobile, 'Tab traversal is not an input path on a touch profile');
+  test.skip(
+    !(await tabsToLinks(page)),
+    'This engine leaves links out of Tab traversal (Safari default)',
+  );
+
+  await page.goto('/wazne-telefony');
+
+  const reached: string[] = [];
+  for (let i = 0; i < 10; i += 1) {
+    await page.keyboard.press('Tab');
+    const name = await page.evaluate(() => document.activeElement?.textContent?.trim() ?? '');
+    if (name === '') break;
+    reached.push(name);
+  }
+
+  // Skip link, then the emergency strip's 112, then the breadcrumb, then Pilne.
+  expect(reached[0]).toContain('Przejdź do treści');
+  expect(reached[1]).toBe('112');
+  expect(reached[2]).toBe('Start');
+  expect(reached[3]).toBe('112');
+  expect(reached[4]).toContain('58 764 01 16');
+});
+
+test('/wazne-telefony stays readable at 320 px without scrolling sideways (1.4.10)', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 320, height: 720 });
+  await page.goto('/wazne-telefony');
+
+  const horizontalOverflow = await page.evaluate(
+    () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+  );
+
+  expect(horizontalOverflow, 'The page scrolls horizontally at 320 px').toBe(false);
+  await expect(page.getByRole('link', { name: '58 764 01 16' })).toBeVisible();
+});
+
+test('/wazne-telefony survives 200% text size (1.4.4 Resize Text)', async ({ page }) => {
+  await page.setViewportSize({ width: 640, height: 720 });
+  await page.goto('/wazne-telefony');
+  await page.evaluate(() => {
+    document.documentElement.style.fontSize = '32px';
+  });
+
+  const horizontalOverflow = await page.evaluate(
+    () => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+  );
+
+  expect(horizontalOverflow, 'Page scrolls horizontally at 200% text size').toBe(false);
+  await expect(page.getByRole('heading', { level: 1, name: 'Ważne telefony' })).toBeVisible();
 });

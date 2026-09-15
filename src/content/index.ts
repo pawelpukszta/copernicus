@@ -49,6 +49,28 @@ export { isFallback, resolvePhones } from './fallback';
 
 export { contactCopy } from './copy';
 
+export {
+  formatAvailability,
+  formatDayRange,
+  formatDays,
+  isAvailabilityUnknown,
+} from './availability';
+
+export type { ContactFilter, FacilityGroup, SortKey } from './queries';
+export {
+  SHORTLIST_LIMIT,
+  contactFilterHref,
+  facilityGroups,
+  institutionalContactPoints,
+  isFiltered,
+  matchesFilter,
+  parseContactFilter,
+  resultCount,
+  searchable,
+  sortContactPoints,
+  urgentContactPoints,
+} from './queries';
+
 export type { IssueSeverity, ValidationContext, ValidationIssue } from './validation';
 export {
   assertValidContactPoints,

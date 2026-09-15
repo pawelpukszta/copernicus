@@ -12,6 +12,9 @@ export const contactCopy = {
   /** Availability of kind "unknown". Never a blank cell. */
   hoursUnknown: { pl: 'Godziny do potwierdzenia' },
 
+  /** Availability of kind "24/7". */
+  aroundTheClock: { pl: 'Całodobowo' },
+
   /**
    * The two halves of the fallback sentence, e.g.
    * "Rejestracja do poradni: numer w przygotowaniu, tymczasowo centrala 58 764 01 00".

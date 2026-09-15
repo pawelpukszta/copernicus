@@ -1,0 +1,55 @@
+.cp-phone {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  color: var(--color-primary);
+  font-weight: 700;
+  /* Digits line up in a column and are easier to read back over the phone. */
+  font-variant-numeric: tabular-nums;
+  /* A number is never truncated, abbreviated or split across lines. */
+  white-space: nowrap;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+}
+
+.cp-phone:hover {
+  color: var(--color-primary-hover);
+  /* Thickness, not colour alone: 1.4.1 Use of Colour. */
+  text-decoration-thickness: 0.15em;
+}
+
+/* A called number is not "used up", so it is not styled as visited. */
+
+.cp-phone--large {
+  font-size: 1.375rem;
+}
+
+.cp-phone__extension {
+  font-weight: 400;
+  font-size: 0.9375rem;
+}
+
+.cp-phone-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.cp-phone-list__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.cp-phone-list__label {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+@media (min-width: 1024px) {
+  .cp-phone--large {
+    font-size: 1.75rem;
+  }
+}
