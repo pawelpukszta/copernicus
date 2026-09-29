@@ -48,6 +48,11 @@ jobs:
       - name: Client/server boundary
         run: pnpm run check:boundary
 
+      # Fails on an import that breaks the layer rules in docs/project-structure.md:
+      # upward imports, deep imports into a module, unlisted cross-module edges.
+      - name: Layer structure
+        run: pnpm run check:structure
+
       # Fails when design/component-exports.generated.md no longer matches the
       # installed react-aria-components version.
       - name: Component inventory freshness
