@@ -24,9 +24,10 @@
     "test:a11y:ui": "playwright test --ui",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:boundary": "node scripts/check-client-boundary.mjs",
+    "check:structure": "node scripts/check-structure.mjs",
     "design:inventory": "node scripts/generate-component-inventory.mjs",
     "design:inventory:check": "node scripts/generate-component-inventory.mjs --check",
-    "verify": "pnpm run format:check && pnpm run lint && pnpm run check:contrast && pnpm run check:boundary && pnpm run design:inventory:check && pnpm run test && pnpm run build && pnpm run typecheck"
+    "verify": "pnpm run format:check && pnpm run lint && pnpm run check:contrast && pnpm run check:boundary && pnpm run check:structure && pnpm run design:inventory:check && pnpm run test && pnpm run build && pnpm run typecheck"
   },
   "dependencies": {
     "next": "^16.3.4",

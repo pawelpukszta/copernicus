@@ -19,6 +19,7 @@ reached by link. No health data enters this repository. `docs/adr/0006-scope-pub
 | `pnpm test:a11y`        | Playwright: axe, keyboard, focus, target size, 200% zoom, server-rendered content |
 | `pnpm check:contrast`   | Token pairs against WCAG thresholds, AA blocking, AAA reported                    |
 | `pnpm check:boundary`   | Fails when `'use client'` appears outside `src/components`                        |
+| `pnpm check:structure`  | Fails on an import that breaks the layer rules in `docs/project-structure.md`     |
 | `pnpm design:inventory` | Regenerates the React Aria component list after a library upgrade                 |
 
 `pnpm typecheck` runs **after** the build, because `next-env.d.ts` references types Next
@@ -50,6 +51,11 @@ generates. `pnpm verify` already orders it correctly.
 8. **Every human-readable string in `src/content/` is locale-keyed**, even while Polish is the only
    locale, and `<html lang>` comes from the route. The language code for Ukrainian is `uk`.
    `docs/adr/0008-internationalisation.md`.
+9. **Files go where `.claude/skills/project-structure/SKILL.md` says**, and imports point down
+   the layers: `app -> widgets -> modules -> shared | infrastructure`, `components -> shared`.
+   Another module is reached only through `@/modules/<name>` and only along an edge listed in
+   `scripts/check-structure.mjs`. Nothing new goes into `src/content/` (legacy, migrating).
+   `pnpm check:structure` enforces it. `docs/adr/0009-project-structure.md`.
 
 ## Conventions
 
@@ -65,6 +71,8 @@ generates. `pnpm verify` already orders it correctly.
 ## Where things are
 
 ```
+.claude/skills/project-structure/SKILL.md  Placement table: what I am adding -> where it goes
+docs/project-structure.md       The full map of src/: layers, module anatomy, examples, migration
 design/workflow.md              How design and code hand work to each other, step by step
 design/screens/<route>.md       The implementation contract for one route
 design/information-architecture.md  Content model (contact point) and the route table
@@ -77,8 +85,9 @@ docs/adr/                       Decisions with their trade-offs
 
 - Hosting is undecided, so nothing may depend on ISR for correctness and nothing may use the edge
   runtime. `docs/adr/0005-rendering-strategy-and-hosting.md`.
-- No CMS yet. Routes read from a typed module under `src/content/` until one is chosen; that
-  module is the contract the CMS will have to satisfy.
+- No CMS yet. Routes read from typed local sources (`src/content/` today, moving to
+  `src/modules/<x>/data/sources/local/`) until one is chosen; the module `model/` is the contract
+  the CMS will have to satisfy.
 - The preference controls (theme, contrast, text size) and the language switcher are built as one
   iteration of the loop after `/wazne-telefony`, not per route. Until then only their contract
   exists: rules 7 and 8 above.
