@@ -1,0 +1,461 @@
+/*
+ * /wazne-telefony
+ *
+ * Every colour is a token from src/styles/tokens.css; pnpm check:contrast guards the
+ * palette. No raw colour may appear here.
+ */
+
+.cp-emergency {
+  background-color: var(--color-danger);
+  color: var(--color-text-inverse);
+  padding: var(--space-3) var(--space-4);
+}
+
+.cp-emergency__text {
+  max-width: none;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+}
+
+.cp-emergency__number {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  padding-inline: var(--space-2);
+  color: var(--color-text-inverse);
+  font-size: 1.375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+}
+
+/* Windows high contrast: the strip must stay legible when the fill is dropped. */
+@media (forced-colors: active) {
+  .cp-emergency {
+    border: 2px solid CanvasText;
+  }
+
+  .cp-emergency__number {
+    color: LinkText;
+  }
+}
+
+.cp-phones {
+  padding: var(--space-4) var(--space-3) var(--space-8);
+}
+
+.cp-phones__lead {
+  color: var(--color-text-muted);
+}
+
+.cp-phones h1 {
+  font-size: 1.75rem;
+  margin-block: var(--space-4) var(--space-3);
+}
+
+.cp-phones h2 {
+  font-size: 1.25rem;
+}
+
+.cp-phones__count {
+  max-width: var(--measure);
+  font-weight: 600;
+}
+
+.cp-fallback-note {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  text-wrap: pretty;
+}
+
+/* Pilne --------------------------------------------------------------------------- */
+
+.cp-urgent {
+  margin-block: var(--space-6);
+  padding: var(--space-4);
+  border: 2px solid var(--color-danger);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-raised);
+}
+
+.cp-urgent h2 {
+  margin-block: 0 var(--space-3);
+  color: var(--color-danger);
+}
+
+.cp-urgent__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cp-urgent__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.cp-urgent__label {
+  font-weight: 600;
+  text-wrap: pretty;
+}
+
+.cp-urgent__note {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+/* Filter -------------------------------------------------------------------------- */
+
+.cp-filter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-block: var(--space-6);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.cp-filter__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.cp-filter__label {
+  font-weight: 600;
+}
+
+/*
+ * A select that keeps its native appearance paints its text with the platform's own
+ * colour, and WebKit does not follow `color-scheme` here the way Chromium does: in dark
+ * mode it drew black text over the dark page, a real 1.1:1 failure that only Safari shows.
+ * So the closed control is ours, appearance and all. The list it opens is still the
+ * operating system's own picker, which is why the native element was chosen in the first
+ * place. The arrow is drawn from currentColor, so it follows the theme and needs no token
+ * of its own.
+ */
+.cp-filter__select {
+  appearance: none;
+  min-height: var(--target-min);
+  padding: var(--space-2) var(--space-3);
+  padding-inline-end: var(--space-8);
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentcolor 50%),
+    linear-gradient(135deg, currentcolor 50%, transparent 50%);
+  background-position:
+    calc(100% - 1.25rem) calc(50% - 2px),
+    calc(100% - 1rem) calc(50% - 2px);
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+}
+
+/* Forced colours drop background images, so the arrow goes: hand the control back. */
+@media (forced-colors: active) {
+  .cp-filter__select {
+    appearance: auto;
+    padding-inline-end: var(--space-3);
+  }
+}
+
+.cp-filter__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.cp-filter__reset,
+.cp-filter__sort a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+}
+
+.cp-filter__sort {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+/* Groups and tables ---------------------------------------------------------------- */
+
+.cp-group {
+  margin-block: var(--space-8);
+}
+
+.cp-group h2 {
+  margin-block: 0 var(--space-2);
+}
+
+.cp-group__meta,
+.cp-group__empty {
+  margin-block: 0 var(--space-3);
+  color: var(--color-text-muted);
+  text-wrap: pretty;
+}
+
+.cp-group__hours {
+  color: var(--color-text-muted);
+}
+
+/* A table is data: capping it at the prose measure would force truncation. */
+.cp-table__scroll {
+  overflow-x: auto;
+}
+
+.cp-table {
+  width: 100%;
+  border-collapse: collapse;
+  /* Percentages, not fixed widths: German and Ukrainian labels run about 30% longer. */
+  table-layout: auto;
+}
+
+.cp-table th,
+.cp-table td {
+  padding: var(--space-3);
+  text-align: start;
+  vertical-align: top;
+}
+
+.cp-table thead th {
+  border-bottom: 2px solid var(--color-border-strong);
+  font-size: 0.9375rem;
+}
+
+.cp-table tbody tr {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cp-table tbody tr:nth-child(even) {
+  background-color: var(--color-surface-raised);
+}
+
+.cp-table__label {
+  /* Long labels wrap; a truncated phone label is worse than a tall row. */
+  text-wrap: pretty;
+  font-weight: 600;
+  width: 45%;
+}
+
+.cp-table__note,
+.cp-table__fax {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+  font-weight: 400;
+}
+
+.cp-table__hours {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+.cp-table__hours--unknown {
+  font-style: italic;
+}
+
+/* Cards --------------------------------------------------------------------------- */
+
+.cp-empty,
+.cp-fallback-card {
+  margin-block: var(--space-8);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface-raised);
+}
+
+.cp-empty__actions,
+.cp-fallback-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-block-end: 0;
+}
+
+/*
+ * Secondary actions. They are links, not buttons: every one of them navigates. React Aria's
+ * Button cannot render as an anchor either, since ButtonProps omits href and elementType
+ * in 1.21.1, so a styled link is both the honest and the only option.
+ */
+.cp-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--target-min);
+  padding: var(--space-2) var(--space-4);
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cp-action:hover {
+  background-color: var(--color-surface-raised);
+  text-decoration: underline;
+  text-decoration-thickness: 0.15em;
+}
+
+.cp-phones__footer {
+  padding: var(--space-4) var(--space-3) var(--space-8);
+  background-color: var(--color-surface-raised);
+  color: var(--color-text-muted);
+}
+
+/* Breakpoints ---------------------------------------------------------------------- */
+
+@media (min-width: 640px) {
+  .cp-phones,
+  .cp-phones__footer {
+    padding-inline: var(--space-4);
+  }
+
+  .cp-phones {
+    padding-block: var(--space-6) var(--space-12);
+  }
+
+  .cp-urgent__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cp-filter {
+    display: grid;
+    grid-template-columns: 2fr 1fr auto;
+    align-items: end;
+  }
+
+  .cp-filter__sort {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cp-phones,
+  .cp-phones__footer {
+    padding-inline: var(--space-8);
+  }
+
+  .cp-phones h1 {
+    font-size: 2rem;
+  }
+
+  .cp-phones h2 {
+    font-size: 1.375rem;
+  }
+
+  .cp-urgent__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/*
+ * Below 640 px each row stacks, which is the mobile pattern from the artboard. The markup
+ * stays one table: rendering a second copy as <div>s would put every number in the
+ * accessibility tree twice. Table semantics are dropped here on purpose, because a
+ * three-column grid at 360 px is not a table anyone can read across.
+ */
+@media (max-width: 639px) {
+  .cp-table,
+  .cp-table tbody,
+  .cp-table tr,
+  .cp-table th,
+  .cp-table td {
+    display: block;
+    width: auto;
+  }
+
+  .cp-table thead {
+    /* The header row has nothing to head once the rows stack, and each cell below
+       already reads as what it is: a name, a number, an opening time. */
+    display: none;
+  }
+
+  .cp-table tbody tr {
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .cp-table th,
+  .cp-table td {
+    padding-inline: 0;
+    padding-block: var(--space-1);
+  }
+
+  .cp-table__numbers .cp-phone {
+    font-size: 1.375rem;
+  }
+
+  .cp-urgent__card .cp-phone {
+    /* Each urgent number is a full-width target on a phone. */
+    justify-content: center;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
+    text-decoration: none;
+  }
+
+  .cp-urgent__card .cp-phone:hover {
+    background-color: var(--color-primary-hover);
+  }
+}
+
+/*
+ * People print this page and pin it up. The filter and the actions are useless on paper;
+ * every number is not.
+ */
+@media print {
+  .cp-emergency,
+  .cp-filter,
+  .cp-empty__actions,
+  .cp-fallback-card__actions,
+  .cp-breadcrumbs {
+    display: none;
+  }
+
+  .cp-phones {
+    padding: 0;
+    font-size: 12pt;
+  }
+
+  .cp-table,
+  .cp-table tbody,
+  .cp-table tr,
+  .cp-table th,
+  .cp-table td {
+    display: revert;
+  }
+
+  .cp-table thead {
+    display: table-header-group;
+  }
+
+  .cp-phone,
+  .cp-phone--large {
+    font-size: 12pt;
+    color: inherit;
+    text-decoration: none;
+  }
+}

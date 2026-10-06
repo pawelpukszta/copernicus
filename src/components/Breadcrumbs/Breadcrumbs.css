@@ -1,0 +1,49 @@
+.cp-breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+}
+
+.cp-breadcrumbs__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* The separator is decorative: it carries no meaning the list structure does not
+   already convey, so it is generated content and stays out of the accessibility tree. */
+.cp-breadcrumbs__item + .cp-breadcrumbs__item::before {
+  content: '/';
+  color: var(--color-text-muted);
+}
+
+.cp-breadcrumbs__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--target-min);
+  /* A short crumb like "Start" is 31 px wide on its own, which keeps 2.5.8 (AA, 24 px)
+     but loses the 44 px figure this project holds from 2.5.5 (AAA). */
+  min-width: var(--target-min);
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.2em;
+}
+
+.cp-breadcrumbs__link[data-hovered] {
+  color: var(--color-primary-hover);
+  text-decoration-thickness: 0.15em;
+}
+
+.cp-breadcrumbs__current {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target-min);
+  color: var(--color-text-muted);
+}

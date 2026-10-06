@@ -48,14 +48,13 @@ generates. `pnpm verify` already orders it correctly.
    the system".** `data-theme` takes `light`, `dark` or a named high-contrast theme, never a
    boolean. `data-font-scale` takes `1`, `2` or `3`. Nothing else may read or write those keys.
    `docs/adr/0007-user-preferences-theme-contrast-text-size.md`.
-8. **Every human-readable string in `src/content/` is locale-keyed**, even while Polish is the only
+8. **Every human-readable string in `src/modules/**/model` is locale-keyed**, even while Polish is the only
    locale, and `<html lang>` comes from the route. The language code for Ukrainian is `uk`.
    `docs/adr/0008-internationalisation.md`.
 9. **Files go where `.claude/skills/project-structure/SKILL.md` says**, and imports point down
    the layers: `app -> widgets -> modules -> shared | infrastructure`, `components -> shared`.
    Another module is reached only through `@/modules/<name>` and only along an edge listed in
-   `scripts/check-structure.mjs`. Nothing new goes into `src/content/` (legacy, migrating).
-   `pnpm check:structure` enforces it. `docs/adr/0009-project-structure.md`.
+   `scripts/check-structure.mjs`. `pnpm check:structure` enforces it. `docs/adr/0009-project-structure.md`.
 
 ## Conventions
 
@@ -85,9 +84,8 @@ docs/adr/                       Decisions with their trade-offs
 
 - Hosting is undecided, so nothing may depend on ISR for correctness and nothing may use the edge
   runtime. `docs/adr/0005-rendering-strategy-and-hosting.md`.
-- No CMS yet. Routes read from typed local sources (`src/content/` today, moving to
-  `src/modules/<x>/data/sources/local/`) until one is chosen; the module `model/` is the contract
-  the CMS will have to satisfy.
+- No CMS yet. Routes read from typed local sources (`src/modules/<x>/data/sources/local/`)
+  until one is chosen; the module `model/` is the contract the CMS will have to satisfy.
 - The preference controls (theme, contrast, text size) and the language switcher are built as one
   iteration of the loop after `/wazne-telefony`, not per route. Until then only their contract
   exists: rules 7 and 8 above.

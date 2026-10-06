@@ -1,0 +1,72 @@
+.cp-search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cp-search__label {
+  font-weight: 600;
+}
+
+.cp-search__control {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+}
+
+.cp-search__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: var(--target-min);
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+/* The native clear affordance would sit on top of ours and is not keyboard reachable. */
+.cp-search__input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.cp-search__clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--target-min);
+  min-height: var(--target-min);
+  padding: var(--space-2);
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.cp-search__clear[data-hovered] {
+  background-color: var(--color-surface-raised);
+}
+
+/* React Aria hides the clear button when the field is empty. */
+.cp-search:not([data-empty]) .cp-search__clear {
+  visibility: visible;
+}
+
+.cp-search[data-empty] .cp-search__clear {
+  visibility: hidden;
+}
+
+.cp-search__description {
+  color: var(--color-text-muted);
+  font-size: 0.9375rem;
+}
+
+@media (forced-colors: active) {
+  .cp-search__input,
+  .cp-search__clear {
+    border-color: ButtonText;
+  }
+}

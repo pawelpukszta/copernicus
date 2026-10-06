@@ -20,7 +20,6 @@ src/
 ├── components/      React Aria wrappers. The only layer allowed to declare 'use client'.
 ├── shared/          No business nouns: i18n primitives, formatting, SEO, config, test helpers.
 ├── infrastructure/  Content sources, CMS/search clients, cache tags, env. Never imports a module.
-├── content/         LEGACY. Do not add files. Migrating per docs/project-structure.md §9.
 └── styles/          tokens.css, global.css.
 ```
 
@@ -68,7 +67,7 @@ and `components -> shared`. Nothing imports upward. Cross-module imports go thro
 
 | Noun (Polish)                                                            | Module          |
 | ------------------------------------------------------------------------ | --------------- |
-| Punkt kontaktu, numer, faks, dostępność godzin, numer alarmowy           | `contacts`      |
+| Punkt kontaktu, numer, faks, centrala, dostępność godzin, numer alarmowy | `contacts`      |
 | Placówka / szpital, oddział, poradnia, adres, dojazd, dostępność budynku | `facilities`    |
 | Lekarz, personel, rola, specjalizacja                                    | `staff`         |
 | Aktualność, kategoria, archiwum, załącznik                               | `news`          |

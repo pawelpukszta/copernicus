@@ -23,6 +23,11 @@ html {
   /* Never lock the root font size: content must scale to 200% (1.4.4, AA). */
   font-family: var(--font-sans);
   -webkit-text-size-adjust: 100%;
+  /* The canvas colour is set here rather than left to propagate up from body. When only
+     body carries it, WebKit reports the body's own background as transparent, and a
+     contrast checker then measures every element against an assumed white page: the dark
+     theme looked like a 1.82:1 failure on /wazne-telefony while rendering correctly. */
+  background-color: var(--color-surface);
 }
 
 body {

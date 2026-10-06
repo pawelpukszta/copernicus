@@ -13,7 +13,10 @@ const LEVEL = (process.env.A11Y_LEVEL ?? 'aa').toLowerCase();
 const AA_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'];
 const AAA_TAGS = ['wcag2aaa', 'wcag21aaa'];
 
-const ROUTES = ['/'];
+const ROUTES = ['/', '/wazne-telefony', '/kontakt', '/zglos-problem-dostepnosci'];
+
+/** 360 px is the narrow end the spec supports; 1280 px is the desktop artboard. */
+const WIDTHS = [360, 1280];
 
 function summarise(
   violations: {
@@ -34,17 +37,20 @@ function summarise(
 }
 
 for (const route of ROUTES) {
-  test(`no AA axe violations on ${route}`, async ({ page }) => {
-    await page.goto(route);
+  for (const width of WIDTHS) {
+    test(`no AA axe violations on ${route} at ${width} px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(route);
 
-    const results = await new AxeBuilder({ page }).withTags(AA_TAGS).analyze();
+      const results = await new AxeBuilder({ page }).withTags(AA_TAGS).analyze();
 
-    if (results.violations.length > 0) {
-      console.error(summarise(results.violations));
-    }
+      if (results.violations.length > 0) {
+        console.error(summarise(results.violations));
+      }
 
-    expect(results.violations).toEqual([]);
-  });
+      expect(results.violations).toEqual([]);
+    });
+  }
 
   test(`colour contrast holds in dark mode on ${route}`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: 'dark' });
