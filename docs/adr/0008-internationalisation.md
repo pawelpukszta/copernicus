@@ -26,11 +26,11 @@ attributes and in `hreflang`, so it is fixed now rather than migrated later.
 
 ### 2. Translation is tiered, and the tiers are a product commitment
 
-| Tier | Languages          | Content                                                                                                                    |
-| ---- | ------------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| 1    | pl, en, de, uk     | Emergency and out-of-hours contacts, how to get care, insurance and EHIC, patient rights, what to bring, addresses and how to get there, the accessibility statement, the accessibility feedback form |
-| 2    | pl, en             | Facilities, departments, clinics, price list                                                                                |
-| 3    | pl only            | News, EU projects, procurement, competitions, BIP                                                                           |
+| Tier | Languages      | Content                                                                                                                                                                                               |
+| ---- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1    | pl, en, de, uk | Emergency and out-of-hours contacts, how to get care, insurance and EHIC, patient rights, what to bring, addresses and how to get there, the accessibility statement, the accessibility feedback form |
+| 2    | pl, en         | Facilities, departments, clinics, price list                                                                                                                                                          |
+| 3    | pl only        | News, EU projects, procurement, competitions, BIP                                                                                                                                                     |
 
 A page in a tier it does not belong to is not silently machine-translated and not a dead link: the
 language switcher stays enabled and the target page states, in the requested language, that this
@@ -71,11 +71,11 @@ does not belong in this control.
 
 Three separate moments, and conflating them is the mistake this ADR exists to prevent.
 
-| When                                 | What                                                                                                                                                                  |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Now, before `/wazne-telefony` is implemented | The content types in `src/content/` carry locale. `ContactPoint.label`, `note` and every human-readable string are locale-keyed. `<html lang>` is driven by the route, not hard-coded. The switcher exists in the header markup with Polish as its only entry. |
-| The chrome iteration (after `/wazne-telefony`) | The switcher becomes real as a list of links, still with one entry.                                                                                                   |
-| A dedicated phase, after the first five or six Polish routes exist | `[locale]` segment, message catalogues, the slug map, `hreflang` and the language banner.                                                                              |
+| When                                                               | What                                                                                                                                                                                                                                                           |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Now, before `/wazne-telefony` is implemented                       | The content types in `src/content/` carry locale. `ContactPoint.label`, `note` and every human-readable string are locale-keyed. `<html lang>` is driven by the route, not hard-coded. The switcher exists in the header markup with Polish as its only entry. |
+| The chrome iteration (after `/wazne-telefony`)                     | The switcher becomes real as a list of links, still with one entry.                                                                                                                                                                                            |
+| A dedicated phase, after the first five or six Polish routes exist | `[locale]` segment, message catalogues, the slug map, `hreflang` and the language banner.                                                                                                                                                                      |
 
 The reason for the split: locale in the data model is nearly free now and expensive later, whereas
 the routing layer is cheap to add later and would slow every screen down if it were added first.

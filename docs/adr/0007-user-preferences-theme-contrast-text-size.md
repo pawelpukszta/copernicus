@@ -48,7 +48,7 @@ of the attribute means "follow the system", which is what the `prefers-color-sch
 This is the decision that cannot be deferred. A boolean light/dark toggle and a separate "increase
 contrast" flag would produce a two-dimensional state space (light/dark x normal/high) that the token
 file would have to spell out four times, and a persistence layer that has to migrate when a third
-contrast theme is added. Contrast on a Polish public-sector site is conventionally a *theme*
+contrast theme is added. Contrast on a Polish public-sector site is conventionally a _theme_
 (black on yellow, yellow on black), not an intensity applied on top of another theme.
 
 ### 2. Text size is a separate axis
@@ -85,7 +85,7 @@ Earlier is wrong: there would be no real page to test the extreme settings again
 every route implemented before it would have to be re-verified at maximum text size and in the
 high-contrast theme.
 
-What lands *before* step 6 of the current loop is only the contract: the attribute names, their
+What lands _before_ step 6 of the current loop is only the contract: the attribute names, their
 allowed values and the fact that the default is "attribute absent". No UI.
 
 ## Consequences
