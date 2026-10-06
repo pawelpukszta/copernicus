@@ -96,14 +96,14 @@ copernicus/
 
 ## 2. Layer rules
 
-| Layer            | May import from                                                     | May never                                                        |
-| ---------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| `app`            | `widgets`, `modules/<x>` (index), `components`, `shared`, `styles`  | contain business logic, strings a test asserts on, `'use client'`, deep module paths, `infrastructure` |
-| `widgets`        | `modules/<x>` (index), `components`, `shared`                       | import `app`, `infrastructure`, module internals                 |
-| `modules/<x>`    | own files, `shared`, `infrastructure`, `components` (from `ui/` only), other modules on the allowlist (index only) | import `app`, `widgets`, another module's internals, declare `'use client'` |
-| `components`     | `shared`, `react-aria-components`, `next/*`                         | import `modules`, `widgets`, `app`, `infrastructure`             |
-| `shared`         | `shared`                                                            | import anything else under `src/`; mention a business noun       |
-| `infrastructure` | `shared`                                                            | import `modules`, `widgets`, `components`, `app`                 |
+| Layer            | May import from                                                                                                    | May never                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `app`            | `widgets`, `modules/<x>` (index), `components`, `shared`, `styles`                                                 | contain business logic, strings a test asserts on, `'use client'`, deep module paths, `infrastructure` |
+| `widgets`        | `modules/<x>` (index), `components`, `shared`                                                                      | import `app`, `infrastructure`, module internals                                                       |
+| `modules/<x>`    | own files, `shared`, `infrastructure`, `components` (from `ui/` only), other modules on the allowlist (index only) | import `app`, `widgets`, another module's internals, declare `'use client'`                            |
+| `components`     | `shared`, `react-aria-components`, `next/*`                                                                        | import `modules`, `widgets`, `app`, `infrastructure`                                                   |
+| `shared`         | `shared`                                                                                                           | import anything else under `src/`; mention a business noun                                             |
+| `infrastructure` | `shared`                                                                                                           | import `modules`, `widgets`, `components`, `app`                                                       |
 
 Two rules inside a module:
 

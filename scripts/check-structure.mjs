@@ -182,8 +182,7 @@ for (const file of walk(srcRoot)) {
   const isTest = /\.(test|spec)\.(ts|tsx)$/.test(fromRel);
 
   for (const specifier of importSpecifiers(source)) {
-    const report = (rule, detail) =>
-      violations.push({ file: fromRel, specifier, rule, detail });
+    const report = (rule, detail) => violations.push({ file: fromRel, specifier, rule, detail });
 
     // Rule 5: model/ stays framework-free.
     if (
@@ -191,7 +190,10 @@ for (const file of walk(srcRoot)) {
       /^modules\/[^/]+\/model\//.test(fromRel) &&
       FRAMEWORK_SPECIFIERS.test(specifier)
     ) {
-      report('model-imports-framework', 'model/ must not import React or Next; move this to ui/ or queries/');
+      report(
+        'model-imports-framework',
+        'model/ must not import React or Next; move this to ui/ or queries/',
+      );
     }
 
     const toRel = resolveSpecifier(file, specifier);
@@ -256,7 +258,9 @@ const presentModules = existsSync(modulesDir)
   ? readdirSync(modulesDir).filter((entry) => statSync(join(modulesDir, entry)).isDirectory())
   : [];
 
-console.log(`Modules present: ${presentModules.length ? presentModules.sort().join(', ') : 'none yet'}`);
+console.log(
+  `Modules present: ${presentModules.length ? presentModules.sort().join(', ') : 'none yet'}`,
+);
 
 for (const name of presentModules) {
   if (!(name in MODULE_DEPENDENCIES)) {
