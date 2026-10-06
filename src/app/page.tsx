@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { AccessibilityDemo } from '@/components/AccessibilityDemo';
-import { PhoneLink } from '@/components/PhoneLink';
-import { facilities, facilityOrder, text } from '@/content';
+import { PhoneLink, listFacilitySwitchboards } from '@/modules/contacts';
+import { text } from '@/shared/i18n';
 import './page.css';
 
 export const metadata: Metadata = {
@@ -14,7 +14,9 @@ export const metadata: Metadata = {
  * readable before hydration and with JavaScript disabled, which is what
  * e2e/server-rendered.spec.ts asserts. Replace once design/screens/ has a spec.
  */
-export default function HomePage() {
+export default async function HomePage() {
+  const switchboards = await listFacilitySwitchboards();
+
   return (
     <>
       <header className="cp-header">
@@ -42,20 +44,17 @@ export default function HomePage() {
           <h2 id="kontakt">Centrale placówek</h2>
           {/*
            * Server-rendered on purpose: this must work without JavaScript. Read from
-           * src/content rather than typed out here, because a number that exists in two
+           * modules/contacts rather than typed out here, because a number that exists in two
            * places drifts: /wazne-telefony and /kontakt disagreed on the current site
            * until one of them was publishing a fax as the number to call.
            */}
           <ul className="cp-contact">
-            {facilityOrder.map((id) => {
-              const facility = facilities[id];
-              return (
-                <li key={id}>
-                  {text(facility.name)}, {text(facility.address)}:{' '}
-                  <PhoneLink phone={facility.switchboard} />
-                </li>
-              );
-            })}
+            {switchboards.map(({ facility, switchboard }) => (
+              <li key={facility.id}>
+                {text(facility.name)}, {text(facility.address)}:{' '}
+                <PhoneLink phone={switchboard.phone} />
+              </li>
+            ))}
           </ul>
           <p>
             Rejestracje, diagnostyka i numery pilne: <a href="/wazne-telefony">ważne telefony</a>.

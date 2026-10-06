@@ -90,7 +90,6 @@ copernicus/
     │   ├── env.ts                      Parsed, typed environment; the only place process.env is read
     │   └── logger.ts
     │
-    ├── content/                        LEGACY. Migrates into modules/contacts + facilities + shared.
     └── styles/                         tokens.css, global.css (unchanged)
 ```
 
@@ -181,10 +180,13 @@ field names. Never imported outside `data/`.
 against recorded fixtures. Validation of the mapped result happens here too, so a broken record in
 the CMS fails at import, not at render.
 
-**`data/sources/local/`**: typed TypeScript records, today's `src/content/facilities.ts` and
-`contact-points.ts`. They implement the repository interface directly (no DTO step, the record
-already is the model). This is the source until a CMS is chosen, and the fixture set for tests
-afterwards.
+**`data/sources/local/`**: typed TypeScript records, such as `modules/facilities/.../facilities.ts`
+and `modules/contacts/.../contact-points.ts`. They implement the repository interface directly (no
+DTO step, the record already is the model). The one exception is a reference to another module's
+noun: a local record names it by id (`facility: 'kopernik'`) and the local repository expands it
+through the owner's public queries, so the owner's fields are never typed out twice. A CMS
+delivers the reference already expanded. This is the source until a CMS is chosen, and the
+fixture set for tests afterwards.
 
 **`data/sources/cms/`**: fetches through `infrastructure/cms/client.ts`, maps through `mappers.ts`.
 Empty until the CMS decision.
@@ -297,7 +299,7 @@ modules/facilities/
 │   └── validation.ts
 ├── data/
 │   ├── repository.ts         FacilityRepository with facilities(), departments(), clinics()
-│   └── sources/local/        facilities.ts (moved from src/content), departments.ts, clinics.ts
+│   └── sources/local/        facilities.ts (identity and address only), departments.ts, clinics.ts
 ├── queries/
 │   ├── list-facilities.ts
 │   ├── get-facility.ts       With its departments, clinics and contact points (via contacts index)
@@ -319,24 +321,32 @@ app/(site)/poradnie/page.tsx             SSG list with a server-rendered filter 
 
 ### Kontakty (contacts)
 
-Today's `src/content`, minus what moves out. The three views of the IA are three queries.
+The three views of the IA are three queries. A facility's switchboard is a contact, not a
+property of the place: the number and its hours are this module's nouns, and a `Switchboard`
+joins them to the facility through a `FacilityRef`. Keeping it on `Facility` would have needed a
+`facilities -> contacts` edge and made the root of the module graph depend on a leaf.
 
 ```
 modules/contacts/
 ├── model/
 │   ├── contact-point.ts      ContactPoint, Phone, UnitRef, categories, audiences, limits
 │   ├── availability.ts       Availability, DayRange, formatAvailability()
-│   ├── emergency.ts          EmergencyContact, short codes
-│   └── validation.ts         moved as-is
+│   ├── emergency.ts          EmergencyContact, short codes, emergencyNumber, emergencyTelHref()
+│   ├── switchboard.ts        Switchboard: one per facility, what a row without a number falls back to
+│   └── validation.ts         Takes the switchboards in its context; the model reads no data
 ├── data/
-│   ├── repository.ts
-│   └── sources/local/contact-points.ts
+│   ├── repository.ts         ContactRepository with contactPoints(), switchboards()
+│   └── sources/local/        contact-points.ts, switchboards.ts, index.ts (expands facility ids)
 ├── queries/
+│   ├── important-phones.ts             /wazne-telefony: the whole view, rows already resolved
+│   ├── contact-filter.ts               The GET filter: parse, match, sort, rebuild the URL
 │   ├── urgent-contact-points.ts        /wazne-telefony block 1
-│   ├── facility-groups.ts              /wazne-telefony block 2, with the GET filter
-│   ├── institutional-contact-points.ts /kontakt
-│   ├── facility-contact-points.ts      /szpitale/[slug] local view
-│   └── resolve-phones.ts               The switchboard fallback (fallback.ts today)
+│   ├── facility-groups.ts              /wazne-telefony block 2, and the result count
+│   ├── institutional-contact-points.ts /wazne-telefony block 3, later /kontakt
+│   ├── list-facility-switchboards.ts   Every facility with its switchboard: /, /kontakt
+│   ├── get-switchboard.ts              One facility's switchboard
+│   ├── facility-contact-points.ts      /szpitale/[slug] local view (not built yet)
+│   └── resolve-phones.ts               The switchboard fallback
 ├── ui/
 │   ├── PhoneLink/            Moved from components/: it knows contactCopy, so it is not a wrapper
 │   ├── ContactRow/
@@ -346,7 +356,8 @@ modules/contacts/
 ```
 
 `shared/lib/phone.ts` takes `formatPhoneNumber`, `isE164`, `telHref`: they know digits, not
-hospitals. `shared/i18n/` takes `locale.ts`.
+hospitals, so `telHref` accepts E.164 only and 112 is dialled through the module's
+`emergencyTelHref`. `shared/i18n/` takes `locale.ts`.
 
 ### Dyżury (on-duty)
 
@@ -462,6 +473,9 @@ stay colocated, keep `e2e/` for Playwright.
 
 ## 9. Migration of `src/content`
 
+**Status: done on 2026-10-06.** `src/content/` no longer exists and the checker has no legacy
+allowance. The plan is kept below as the record; what the execution changed follows it.
+
 One change, one PR, `pnpm verify` green before and after, so it can be reverted whole.
 
 1. Create `src/shared/i18n/locale.ts` from `content/locale.ts`; `src/shared/lib/phone.ts` from
@@ -485,3 +499,28 @@ One change, one PR, `pnpm verify` green before and after, so it can be reverted 
 
 Until step 6 lands, the checker allows `app` and `components` to import `@/content`, and reports
 the count so the debt is visible in CI output.
+
+### What the plan got wrong
+
+**Step 2 would have created a cycle.** `Facility` carried `switchboard: Phone` and
+`switchboardAvailability: Availability`, both `contacts` nouns, so moving it into `facilities` as
+it stood needed a `facilities -> contacts` edge against the allowed `contacts -> facilities`. The
+switchboard moved instead: `Facility` is now identity and address, and `contacts` owns a
+`Switchboard` record per facility (`model/switchboard.ts`, `data/sources/local/switchboards.ts`).
+The rule it follows is the one in section 7: the noun decides. The alternative, moving `Phone`
+and `Availability` into `shared/`, was rejected because opening hours are listed as a `contacts`
+noun and `shared/` holds none.
+
+**Repositories are asynchronous.** The anatomy in section 3 shows `Promise`-returning
+repositories, and a CMS will be asynchronous, so the local sources are too. Routes became `async`
+server components; nothing about rendering changed. The pure selection functions
+(`facilityGroups`, `resolvePhones`, ...) still take arrays, so they are tested without the
+repository, and `getImportantPhones` composes them for the page so the route holds no selection
+logic.
+
+**`telHref` lost the emergency short codes.** A short code is a business noun, so `shared/` cannot
+know which three digits are dialable. `contacts` dials them through `emergencyTelHref`.
+
+**`validation.ts` takes the switchboards in its context** rather than reading facility data, so
+`model/` stays free of data access. The shipped-data test passes them; the "leads nowhere" rule
+gained a test of its own.

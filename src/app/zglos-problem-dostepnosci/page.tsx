@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { PhoneLink } from '@/components/PhoneLink';
-import { getFacility } from '@/content';
+import { PhoneLink, getSwitchboard } from '@/modules/contacts';
 import '../info-page.css';
 
 export const metadata: Metadata = {
@@ -18,8 +17,8 @@ export const metadata: Metadata = {
  * nothing, which on an accessibility feedback page would be its own small insult. So the
  * channels are here as working links, and the form arrives with its spec.
  */
-export default function AccessibilityFeedbackPage() {
-  const kopernik = getFacility('kopernik');
+export default async function AccessibilityFeedbackPage() {
+  const kopernik = await getSwitchboard('kopernik');
 
   return (
     <main id="main" className="cp-info" tabIndex={-1}>
@@ -40,7 +39,7 @@ export default function AccessibilityFeedbackPage() {
           E-mail: <a href="mailto:dostepnosc@example.org">dostepnosc@example.org</a>
         </li>
         <li>
-          Telefon: <PhoneLink phone={kopernik.switchboard} /> (centrala, poproś o kontakt w sprawie
+          Telefon: <PhoneLink phone={kopernik.phone} /> (centrala, poproś o kontakt w sprawie
           dostępności serwisu)
         </li>
       </ul>

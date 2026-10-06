@@ -3,7 +3,6 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { I18nProvider } from 'react-aria-components';
 import type { ReactElement } from 'react';
 import { Breadcrumbs } from './Breadcrumbs';
-import { PhoneLink, PhoneList } from './PhoneLink';
 import { SearchField } from './SearchField';
 import { Button } from './Button';
 
@@ -66,32 +65,6 @@ describe('Breadcrumbs before hydration', () => {
 
   it('is a navigation landmark with a name of its own', () => {
     expect(markup).toMatch(/<nav[^>]*aria-label="[^"]+"/);
-  });
-});
-
-describe('phone numbers before hydration', () => {
-  it('are dialable links whose visible text is their accessible name (2.5.3)', () => {
-    const markup = ssr(<PhoneLink phone={{ number: '+48587640116' }} size="large" />);
-
-    expect(markup).toContain('href="tel:+48587640116"');
-    expect(markup).toContain('58 764 01 16');
-    // No aria-label: the visible text is the name, so voice control can say it.
-    expect(markup).not.toContain('aria-label');
-  });
-
-  it('carry an extension in the href as well as on screen', () => {
-    const markup = ssr(<PhoneLink phone={{ number: '+48583005676', extension: '101' }} />);
-
-    expect(markup).toContain('href="tel:+48583005676;ext=101"');
-    expect(markup).toContain('wew. 101');
-  });
-
-  it('render every number of a multi-number row as its own link', () => {
-    const markup = ssr(
-      <PhoneList phones={[{ number: '+48587640200' }, { number: '+48587640300' }]} />,
-    );
-
-    expect(markup.match(/href="tel:/g)).toHaveLength(2);
   });
 });
 

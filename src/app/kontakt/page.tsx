@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { PhoneLink } from '@/components/PhoneLink';
-import { facilities, facilityOrder, formatAvailability, text } from '@/content';
+import { PhoneLink, formatAvailability, listFacilitySwitchboards } from '@/modules/contacts';
+import { text } from '@/shared/i18n';
 import '../info-page.css';
 
 export const metadata: Metadata = {
@@ -20,10 +20,12 @@ export const metadata: Metadata = {
  * none yet.
  *
  * What it does do is stop the fallback action on /wazne-telefony from leading to a 404,
- * and it reads the switchboards from src/content rather than repeating them, which is the
- * mistake the whole content model exists to prevent.
+ * and it reads the switchboards from modules/contacts rather than repeating them, which is
+ * the mistake the whole content model exists to prevent.
  */
-export default function ContactPage() {
+export default async function ContactPage() {
+  const switchboards = await listFacilitySwitchboards();
+
   return (
     <main id="main" className="cp-info" tabIndex={-1}>
       <Breadcrumbs items={[{ href: '/', label: 'Start' }, { label: 'Kontakt' }]} />
@@ -37,19 +39,14 @@ export default function ContactPage() {
 
       <h2>Placówki</h2>
       <ul className="cp-info__facilities">
-        {facilityOrder.map((id) => {
-          const facility = facilities[id];
-          return (
-            <li key={id} className="cp-info__facility">
-              <span className="cp-info__facility-name">{text(facility.name)}</span>
-              <span className="cp-info__address">{text(facility.address)}</span>
-              <PhoneLink phone={facility.switchboard} />{' '}
-              <span className="cp-info__address">
-                {formatAvailability(facility.switchboardAvailability)}
-              </span>
-            </li>
-          );
-        })}
+        {switchboards.map(({ facility, switchboard }) => (
+          <li key={facility.id} className="cp-info__facility">
+            <span className="cp-info__facility-name">{text(facility.name)}</span>
+            <span className="cp-info__address">{text(facility.address)}</span>
+            <PhoneLink phone={switchboard.phone} />{' '}
+            <span className="cp-info__address">{formatAvailability(switchboard.availability)}</span>
+          </li>
+        ))}
       </ul>
 
       <h2>Czego tu jeszcze nie ma</h2>

@@ -1,29 +1,22 @@
 import type { Metadata } from 'next';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { Button } from '@/components/Button';
-import { PhoneLink, PhoneList } from '@/components/PhoneLink';
 import { SearchField } from '@/components/SearchField';
-import type { ContactFilter, ContactPoint, Facility, FacilityGroup } from '@/content';
+import type { ContactFilter, ContactRow, ImportantPhonesGroup } from '@/modules/contacts';
 import {
+  PhoneLink,
+  PhoneList,
   contactCopy,
   contactFilterHref,
-  contactPoints,
   emergencyNumber,
-  facilityGroups,
-  facilityOrder,
-  facilities,
+  emergencyTelHref,
   formatAvailability,
-  formatPhoneNumber,
-  institutionalContactPoints,
+  getImportantPhones,
   isAvailabilityUnknown,
-  isFiltered,
-  parseContactFilter,
-  resolvePhones,
-  resultCount,
-  telHref,
-  text,
-  urgentContactPoints,
-} from '@/content';
+} from '@/modules/contacts';
+import type { Facility, FacilityRef } from '@/modules/facilities';
+import { text } from '@/shared/i18n';
+import { formatPhoneNumber } from '@/shared/lib/phone';
 import './page.css';
 
 export const metadata: Metadata = {
@@ -50,12 +43,8 @@ export default async function ImportantPhonesPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const filter = parseContactFilter(await searchParams);
-  const urgent = urgentContactPoints(contactPoints);
-  const groups = facilityGroups(contactPoints, filter);
-  const institutional = institutionalContactPoints(contactPoints, filter);
-  const found = resultCount(contactPoints, filter);
-  const filtered = isFiltered(filter);
+  const { filter, filtered, found, urgent, groups, institutional, facilities } =
+    await getImportantPhones(await searchParams);
 
   return (
     <>
@@ -70,9 +59,9 @@ export default async function ImportantPhonesPage({
           telefonie wystarczy je dotknąć, żeby zadzwonić.
         </p>
 
-        <UrgentBlock contactPoints={urgent} />
+        <UrgentBlock rows={urgent} />
 
-        <FilterForm filter={filter} />
+        <FilterForm filter={filter} filtered={filtered} facilities={facilities} />
 
         {filtered ? (
           <p className="cp-phones__count" role="status">
@@ -93,10 +82,7 @@ export default async function ImportantPhonesPage({
             {institutional.length > 0 ? (
               <section aria-labelledby="instytucje" className="cp-group">
                 <h2 id="instytucje">Dla mediów i instytucji</h2>
-                <ContactTable
-                  caption="Kontakty dla mediów i instytucji"
-                  contactPoints={institutional}
-                />
+                <ContactTable caption="Kontakty dla mediów i instytucji" rows={institutional} />
               </section>
             ) : null}
           </>
@@ -136,7 +122,7 @@ function EmergencyStrip() {
     <div className="cp-emergency">
       <p className="cp-emergency__text">
         Zagrożenie życia? Zadzwoń{' '}
-        <a className="cp-emergency__number" href={telHref(emergencyNumber.code)}>
+        <a className="cp-emergency__number" href={emergencyTelHref(emergencyNumber.code)}>
           {emergencyNumber.code}
         </a>
       </p>
@@ -144,14 +130,14 @@ function EmergencyStrip() {
   );
 }
 
-function UrgentBlock({ contactPoints: urgent }: { contactPoints: readonly ContactPoint[] }) {
+function UrgentBlock({ rows }: { rows: readonly ContactRow[] }) {
   return (
     <section aria-labelledby="pilne" className="cp-urgent">
       <h2 id="pilne">Pilne</h2>
       <ul className="cp-urgent__grid">
         <li className="cp-urgent__card">
           <span className="cp-urgent__label">{text(emergencyNumber.label)}</span>
-          <a className="cp-phone cp-phone--large" href={telHref(emergencyNumber.code)}>
+          <a className="cp-phone cp-phone--large" href={emergencyTelHref(emergencyNumber.code)}>
             {emergencyNumber.code}
           </a>
           {emergencyNumber.note ? (
@@ -159,8 +145,7 @@ function UrgentBlock({ contactPoints: urgent }: { contactPoints: readonly Contac
           ) : null}
         </li>
 
-        {urgent.map((record) => {
-          const resolved = resolvePhones(record);
+        {rows.map(({ contactPoint: record, phones: resolved }) => {
           return (
             <li key={record.id} className="cp-urgent__card">
               <span className="cp-urgent__label">{text(record.label)}</span>
@@ -186,7 +171,15 @@ function UrgentBlock({ contactPoints: urgent }: { contactPoints: readonly Contac
  * enhanced path may not show anything different from the server path, and the surest way
  * to keep that true is to have one path.
  */
-function FilterForm({ filter }: { filter: ContactFilter }) {
+function FilterForm({
+  filter,
+  filtered,
+  facilities,
+}: {
+  filter: ContactFilter;
+  filtered: boolean;
+  facilities: readonly Facility[];
+}) {
   return (
     <form method="get" action="/wazne-telefony" className="cp-filter">
       <div className="cp-filter__field">
@@ -215,9 +208,9 @@ function FilterForm({ filter }: { filter: ContactFilter }) {
           defaultValue={filter.facility ?? ''}
         >
           <option value="">Wszystkie placówki</option>
-          {facilityOrder.map((id) => (
-            <option key={id} value={id}>
-              {text(facilities[id].name)}
+          {facilities.map((facility) => (
+            <option key={facility.id} value={facility.id}>
+              {text(facility.name)}
             </option>
           ))}
         </select>
@@ -227,7 +220,7 @@ function FilterForm({ filter }: { filter: ContactFilter }) {
         <Button type="submit" variant="primary">
           Filtruj
         </Button>
-        {isFiltered(filter) ? (
+        {filtered ? (
           <a className="cp-filter__reset" href="/wazne-telefony">
             Wyczyść filtr
           </a>
@@ -258,9 +251,9 @@ function FilterForm({ filter }: { filter: ContactFilter }) {
   );
 }
 
-function FacilitySection({ group }: { group: FacilityGroup }) {
+function FacilitySection({ group }: { group: ImportantPhonesGroup }) {
   const headingId = `placowka-${group.facility.id}`;
-  const { facility } = group;
+  const { facility, switchboard } = group;
 
   return (
     <section aria-labelledby={headingId} className="cp-group">
@@ -271,18 +264,12 @@ function FacilitySection({ group }: { group: FacilityGroup }) {
         <span className="cp-group__separator" aria-hidden="true">
           {' · '}
         </span>
-        Centrala: <PhoneLink phone={facility.switchboard} />
-        <span className="cp-group__hours">
-          {' '}
-          {formatAvailability(facility.switchboardAvailability)}
-        </span>
+        Centrala: <PhoneLink phone={switchboard.phone} />
+        <span className="cp-group__hours"> {formatAvailability(switchboard.availability)}</span>
       </p>
 
-      {group.contactPoints.length > 0 ? (
-        <ContactTable
-          caption={`Telefony: ${text(facility.name)}`}
-          contactPoints={group.contactPoints}
-        />
+      {group.rows.length > 0 ? (
+        <ContactTable caption={`Telefony: ${text(facility.name)}`} rows={group.rows} />
       ) : (
         <p className="cp-group__empty">
           Pozostałe numery tej placówki są w jej własnej zakładce kontaktowej.
@@ -306,13 +293,7 @@ function FacilitySection({ group }: { group: FacilityGroup }) {
  * selection and no client-side sorting, so plain table semantics describe it accurately.
  * Below 640 px the CSS stacks each row, which is the mobile pattern from the artboard.
  */
-function ContactTable({
-  caption,
-  contactPoints: rows,
-}: {
-  caption: string;
-  contactPoints: readonly ContactPoint[];
-}) {
+function ContactTable({ caption, rows }: { caption: string; rows: readonly ContactRow[] }) {
   return (
     <div className="cp-table__scroll">
       <table className="cp-table">
@@ -325,8 +306,7 @@ function ContactTable({
           </tr>
         </thead>
         <tbody>
-          {rows.map((record) => {
-            const resolved = resolvePhones(record);
+          {rows.map(({ contactPoint: record, phones: resolved }) => {
             const availability =
               resolved.kind === 'fallback' ? resolved.availability : record.availability;
 
@@ -371,7 +351,7 @@ function ContactTable({
  * exist yet. Hiding the row would conceal from the patient that the unit exists; showing
  * "numer w przygotowaniu" alone would leave them with no way to reach anyone.
  */
-function FallbackNote({ facility }: { facility: Facility }) {
+function FallbackNote({ facility }: { facility: FacilityRef }) {
   return (
     <span className="cp-fallback-note">
       {text(contactCopy.numberInPreparation)}, {text(contactCopy.temporarilySwitchboard)}{' '}

@@ -13,9 +13,8 @@
  *   5. a module's model/ importing React or Next
  *   6. a relative import that leaves its own layer unit (use the `@/` alias instead)
  *
- * It also prints the client-facing summary: which cross-module edges are in use and how
- * many imports still point at the legacy src/content layer, so the migration debt is a
- * number in the CI log rather than a feeling.
+ * It also prints which cross-module edges are in use, so the module graph is visible in
+ * the CI log rather than reconstructed from imports by hand.
  *
  * Adding a cross-module edge is a change to MODULE_DEPENDENCIES in a reviewed commit, with
  * a one-line reason, the same way a colour pair is added to check-contrast.mjs.
@@ -39,18 +38,15 @@ const srcRoot = resolve(here, '../src');
  * API; the allowlist below decides which module.
  *
  * `root` is the handful of files directly under src/ (providers.tsx, proxy.ts).
- * `content` is the legacy layer, removed at the end of the migration in
- * docs/project-structure.md section 9. Delete the key and every mention of it then.
  */
 const LAYER_IMPORTS = {
-  app: ['widgets', 'modules', 'components', 'shared', 'styles', 'root', 'content'],
-  widgets: ['modules', 'components', 'shared', 'styles', 'content'],
-  modules: ['modules', 'components', 'shared', 'infrastructure', 'styles', 'content'],
-  components: ['components', 'shared', 'styles', 'content'],
+  app: ['widgets', 'modules', 'components', 'shared', 'styles', 'root'],
+  widgets: ['modules', 'components', 'shared', 'styles'],
+  modules: ['modules', 'components', 'shared', 'infrastructure', 'styles'],
+  components: ['components', 'shared', 'styles'],
   shared: ['shared', 'styles'],
   infrastructure: ['shared'],
   root: ['components', 'shared', 'infrastructure', 'modules', 'styles'],
-  content: ['content', 'shared', 'styles'],
   styles: [],
 };
 
@@ -142,7 +138,7 @@ function resolveSpecifier(fromFile, specifier) {
  */
 function classify(rel) {
   const [head, second] = rel.split('/');
-  // A bare layer name (`@/content`, `@/shared`) is that layer's index file, not a root file.
+  // A bare layer name (`@/shared`) is that layer's index file, not a root file.
   if (!rel.includes('/') && !LAYER_NAMES.includes(head)) {
     return { layer: 'root', unit: 'root', module: null };
   }
@@ -170,7 +166,6 @@ if (!existsSync(srcRoot)) {
 
 const violations = [];
 const edgesInUse = new Map(); // "importer -> importee" -> count
-let legacyImports = 0;
 const unknownLayers = new Set();
 
 for (const file of walk(srcRoot)) {
@@ -200,8 +195,6 @@ for (const file of walk(srcRoot)) {
     if (toRel === null) continue; // bare package or outside src/
     const to = classify(toRel);
     if (to.unknown) unknownLayers.add(to.layer);
-
-    if (to.layer === 'content' && from.layer !== 'content') legacyImports += 1;
 
     // Rule 6: a relative import may not leave its own unit.
     if (specifier.startsWith('.') && to.unit !== from.unit) {
@@ -276,12 +269,6 @@ for (const name of presentModules) {
 if (edgesInUse.size > 0) {
   console.log('Cross-module edges in use:');
   for (const [edge, count] of [...edgesInUse].sort()) console.log(`  ${edge} (${count})`);
-}
-
-if (legacyImports > 0) {
-  console.log(
-    `Legacy imports of src/content: ${legacyImports} (see docs/project-structure.md section 9)`,
-  );
 }
 
 if (unknownLayers.size > 0) {
